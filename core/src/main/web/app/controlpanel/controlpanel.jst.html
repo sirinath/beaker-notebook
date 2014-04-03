@@ -16,11 +16,7 @@
 <div class="navbar navbar-fixed-top">
   <div class="navbar-inner">
     <div class="container pull-left" style="margin-left: 10px; padding-left: 0px;">
-      <a class="brand" href="/beaker/#/control" ng-click="gotoControlPanel($event)" eat-click>
-        <img src="app/images/beaker_icon@2x.png"></img>
-        Beaker
-      </a>
-      <ul class="sub-nav">
+      <ul class="nav">
         <li class="dropdown" ng-repeat="m in getMenus()">
           <a href="#" id="drop2" role="button" class="dropdown-toggle" data-toggle="dropdown">{{m.name}}</a>
           <bk-dropdown-menu menu-items="m.items"></bk-dropdown-menu>
