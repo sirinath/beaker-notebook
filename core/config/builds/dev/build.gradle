@@ -61,6 +61,12 @@ task writeVersion << {
   new File(coreDir, 'config/build_time').write(new Date().format("yyyy-MM-dd HH:mm z"));
 }
 
+run {
+  if ( project.hasProperty("appArgs") ) {
+    args Eval.me(appArgs)
+  }
+}
+
 clean.dependsOn(":core:clean")
 clean.dependsOn(cleanPlugins)
 build.dependsOn(":core:build")
