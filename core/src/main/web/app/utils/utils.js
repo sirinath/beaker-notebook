@@ -78,8 +78,8 @@
       fromPrettyJson: function(jString) {
         return angularUtils.fromPrettyJson(jString);
       },
-      httpGet: function(url, data) {
-        return angularUtils.httpGet(url, data);
+      httpGet: function(url, data, headers) {
+        return angularUtils.httpGet(url, data, headers);
       },
       httpPost: function(url, data) {
         return angularUtils.httpPost(url, data);
@@ -157,15 +157,17 @@
       loadHttp: function(logicalUrl) {
         if (new URL(logicalUrl).hostname == window.location.hostname) {
           var loadingUrl = logicalUrl;
-          var queryParams = {}
+          var queryParams = {};
+          var headers = { 'Authorization' : window.bkBunsenHelper.userId() };
         }
         else {
           var loadingUrl = "../beaker/rest/http-proxy/load";
-          var queryParams = {url: logicalUrl}
+          var queryParams = {url: logicalUrl};
+          var headers = {};
         }
 
         var deferred = angularUtils.newDeferred();
-        angularUtils.httpGet(loadingUrl, queryParams)
+        angularUtils.httpGet(loadingUrl, queryParams, headers)
             .success(function(content) {
               if (!_.isString(content)) {
                 // angular $http auto-detects JSON response and deserialize it using a JSON parser

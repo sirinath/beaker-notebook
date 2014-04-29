@@ -203,8 +203,8 @@
       generateId: function(length) {
         return bkUtils.generateId(length);
       },
-      httpGet: function(url, data) {
-        return bkUtils.httpGet(url, data);
+      httpGet: function(url, data, headers) {
+        return bkUtils.httpGet(url, data, headers);
       },
       httpPost: function(url, data) {
         return bkUtils.httpPost(url, data);

@@ -66,8 +66,8 @@
           this.removeStringArrays(ret);
           return ret;
       },
-      httpGet: function(url, data) {
-        return $http({method: "GET", url: url, params: data});
+      httpGet: function(url, data, headers) {
+        return $http({method: "GET", url: url, params: data, headers: headers});
       },
       httpPost: function(url, data) {
         return $http({
