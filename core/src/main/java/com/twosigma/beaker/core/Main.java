@@ -178,6 +178,19 @@ public class Main {
     if (publicServer) {
       System.out.println("Submit this password: " + bkConfig.getPassword());
     }
+  }
+
+  private static String getInitUrl(Boolean useHttps, Integer portBase, Boolean useKerberos) throws UnknownHostException {
+    String initUrl;
+
+    final String localhostname = InetAddress.getLocalHost().getHostName();
+
+    if (useHttps) {
+      initUrl = "https://" + localhostname + ":" + portBase + "/beaker/";
+    } else {
+      initUrl = "http://" + (useKerberos ? (System.getProperty("user.name") + ".") : "")
+              + localhostname + ":" + (portBase + CLEAR_PORT_OFFSET) + "/beaker/";
+    }
     System.out.println("");
   }
 

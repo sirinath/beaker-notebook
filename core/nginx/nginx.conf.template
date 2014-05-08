@@ -73,6 +73,9 @@ http {
       return 301 %(start_page)s;
     }
 
+    # kerberos
+    listen       %(port_clear)s;
+
     # this is the main beaker index page - auto generated via rest call
     location = /beaker/ {
       %(auth_cookie_rule)s
