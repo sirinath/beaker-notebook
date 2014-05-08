@@ -35,7 +35,8 @@
     'bk.evaluateJobManager',
     'bk.notebook',
     'bk.pluginManager',
-    'bk.datatables'
+    'bk.datatables',
+    'bk.bunsen'
   ]);
 
   /**
