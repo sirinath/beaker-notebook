@@ -41,15 +41,6 @@
                     "background": "#FFE0F0"
                 }
             }
-        },
-        {
-            "name": "R",
-            "plugin": "R",
-            "view": {
-                "cm": {
-                    "mode": "r"
-                }
-            }
         }
     ],
     "cells": [
@@ -77,15 +68,11 @@
             "lineCount": 3
         },
         {
-            "id": "code2uVtKX",
+            "id": "code301W1U",
             "type": "code",
-            "evaluator": "R",
+            "evaluator": "JavaScript",
             "input": {
-                "body": "# This cell is for the R language.  Try running \"hist(rnorm(100))\".\n"
-            },
-            "output": {
-                "selectedType": "Html",
-                "elapsedTime": 945
+                "body": "//JavaScript - will turn pink when plugin loads successfully"
             },
             "evaluatorReader": true,
             "lineCount": 2
