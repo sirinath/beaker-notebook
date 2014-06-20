@@ -165,15 +165,31 @@ define(function(require, exports, module) {
           console.log("evaluations = ", evaluations);
           var evalIds = _(evaluations).keys();
           var thisIndex = evalIds.indexOf(evalId);
+          var output = {
+            "begin_time": new Date().getTime(),
+            "result": "evaluating",
+            "evalId": evalId,
+            "eid": _(evaluations).keys().indexOf(evalId)
+          };
+          evalRef.update({
+            "output": output
+          });
+          bkHelper.refreshRootScope();
 
           var bk = {
             $_: thisIndex > 0 ? evaluations[evalIds[thisIndex - 1]].output.result : null,
+            _out: _(_(evaluations).values()).map(function(it) {
+              return _.isObject(it.output.result) ? JSON.stringify(it.output.result) : it.output.result;
+            }),
             out: function(index) {
               return evaluations[evalIds[index]].output.result;
             },
             updateThisOutput: function(value) {
-              evalRef.update({"output": {"result": value}}, function() {
+              output.result = value;
+              output.last_update_time = new Date().getTime();
+              evalRef.update({"output": output}, function() {
                 bkHelper.refreshRootScope();
+                console.log("output", output);
               });
             }
           };
@@ -189,7 +205,10 @@ define(function(require, exports, module) {
               object: "" + err
             };
           }
-          evalRef.update({"output": {"result": result}});
+          output.result = result;
+          output.end_time = new Date().getTime();
+
+          evalRef.update({"output": output});
           //outputRef.update({"result": result});
           //modelOutput.result = result;
         });

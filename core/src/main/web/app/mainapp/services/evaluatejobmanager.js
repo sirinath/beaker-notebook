@@ -73,7 +73,8 @@
 //                console.log("AAA", snapshot.val());
 //                cell.output = snapshot.val();
 //              });
-              cell.output = $firebase(new Firebase(window.fb.ROOT_URL + "_evaluations/" + evalId + "/output"));
+              var out = new Firebase(window.fb.ROOT_URL + "_evaluations/" + evalId + "/output");
+              cell.output = $firebase(out);
               _theEvaluator = evaluator;
               bkUtils.log("evaluate", {
                 plugin: evaluator.pluginName,
