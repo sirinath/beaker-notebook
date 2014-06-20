@@ -39,8 +39,11 @@ app.post('/evaluate', function (request, response) {
   var evalId = request.body.evalId;
 
   var ref = new Firebase(fb.ROOT_URL + "_evaluations/" + evalId);
+  var bkUpdateThisOutput = function(value) {
+    ref.update({"output": {"result": value}});
+  };
 
-  var evaluationResult = processCode(code);
+  var evaluationResult = processCode(code, bkUpdateThisOutput);
   if (evaluationResult.processed) {
     response.statusCode = 200;
   } else {
@@ -51,7 +54,7 @@ app.post('/evaluate', function (request, response) {
   response.send(result);
 });
 
-function processCode(code) {
+function processCode(code, bkUpdateThisOutput) {
   var returnValue;
   var result;
   try {
