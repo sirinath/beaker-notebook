@@ -16,6 +16,8 @@
     "angular-bootstrap": "0.3.0",
     "bootstrap": "2.3.2",
     "font-awesome": "4.0.3",
-    "requirejs": "2.1.11"
+    "requirejs": "2.1.11",
+    "firebase": "1.0.11",
+    "angularfire": "0.7.1"
   }
 }
