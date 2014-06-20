@@ -16,8 +16,29 @@
 
 (function() {
   'use strict';
-  var module = angular.module('bk.evaluateJobManager', ['bk.utils', 'bk.evaluatorManager']);
-  module.factory('bkEvaluateJobManager', function(bkUtils, bkEvaluatorManager) {
+  var module = angular.module('bk.evaluateJobManager', ['bk.utils', 'bk.evaluatorManager', 'firebase']);
+
+  module.factory('__evaluations', function($firebase) {
+    var ref = new Firebase(window.fb.ROOT_URL + "_evaluations");
+    return ref;
+  });
+
+
+  module.factory('bkEvaluateJobManager', function(bkUtils, bkEvaluatorManager, __evaluations, $firebase) {
+
+    var _evaluations = $firebase(__evaluations);
+//    _evaluations.$add({input: 1, output:2213});
+//    _evaluations.$add({input: 12, output:2213});
+//    _evaluations.$add({input: 123, output:2213});
+//    _evaluations.$add({input: 1234, output:2213});
+
+    window.__evaluations = __evaluations;
+    window._evaluations = _evaluations;
+    __evaluations.on("value", function(snapshot) {
+      window.eve = snapshot.val();
+    });
+
+
     var setOutputCellText = function(cell, text) {
       if (!cell.output) {
         cell.output = {};
@@ -36,11 +57,23 @@
         var evaluator = bkEvaluatorManager.getEvaluator(cell.evaluator);
         if (evaluator) {
           var evalP = lastPromise.then(function() {
-            _theEvaluator = evaluator;
-            bkUtils.log("evaluate", {
-              plugin: evaluator.pluginName,
-              length: cell.input.body.length});
-            return _theEvaluator.evaluate(cell.input.body, cell.output);
+
+            _evaluations.$add({
+              input: cell.input.body,
+              output: {
+                result: "pending"
+              }
+            }).then(function(ref) {
+              return ref.name(); // evalId
+            }).then(function(evalId) {
+              console.log("eval ID = ", evalId);
+              cell.output = $(new Firebase(window.fb.ROOT_URL + "_evaluations/" + evalId + "/output"));
+              _theEvaluator = evaluator;
+              bkUtils.log("evaluate", {
+                plugin: evaluator.pluginName,
+                length: cell.input.body.length});
+              return _theEvaluator.evaluate(cell.input.body, cell.output, evalId);
+            });
           });
           evalP.catch(function(ret) {
             if (ret === "cancelled by user") {

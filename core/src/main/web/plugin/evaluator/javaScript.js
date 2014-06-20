@@ -154,17 +154,22 @@ define(function(require, exports, module) {
     pluginName: PLUGIN_NAME,
     cmMode: "javascript",
     background: "#FFE0F0",
-    evaluate: function(code, modelOutput) {
+    evaluate: function(code, modelOutput, evalId) {
+      var ref = new Firebase(window.fb.ROOT_URL + "_evaluations/" + evalId);
+      window.rrr = ref;
       return bkHelper.fcall(function() {
+        var result;
         try {
-          modelOutput.result = "" + eval(code);
+          result = "" + eval(code);
         } catch (err) {
-          modelOutput.result = {
+          result = {
             type: "BeakerDisplay",
             innertype: "Error",
             object: "" + err
           };
         }
+        ref.update({"output": {"result": result}});
+        //modelOutput.result = result;
       });
     },
     autocomplete2: function(editor, options, cb) {

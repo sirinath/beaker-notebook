@@ -50,6 +50,11 @@
     }
   };
 
+  window.fb = {
+    ROOT_URL: "https://glaring-fire-5327.firebaseIO.com/"
+  };
+  window.fb.ROOT = new Firebase(window.fb.ROOT_URL);
+
   var initPlugins = function() {
     var deferred = Q.defer();
     var plugins;
@@ -98,7 +103,8 @@
       'bk.evaluatePluginManager',
       'bk.controlPanel',
       'bk.mainApp',
-      'bk.debug'
+      'bk.debug',
+      'firebase'
     ]);
 
     // setup routing. the template is going to replace ng-view
@@ -174,9 +180,13 @@
       }
     });
 
-    beaker.run(function($location, $route, $document, bkUtils, bkCoreManager, bkDebug) {
+    beaker.run(function($location, $route, $document, bkUtils, bkCoreManager, bkDebug, $firebase) {
       var user;
       var lastAction = new Date();
+      window.fb.$root = $firebase(window.fb.ROOT);
+      window.fb.reset = function() {
+        window.fb.$root.$set({});
+      };
       var beakerRootOp = {
         gotoControlPanel: function() {
           return $location.path("/control");
