@@ -63,7 +63,7 @@ define(function (require, exports, module) {
 
       checkNodeServerRunning();
     },
-    evaluate: function (code, modelOutput) {
+    evaluate: function (code, modelOutput, evalId) {
       var self = this;
       var progressObj = {
         type: "BeakerDisplay",
@@ -73,15 +73,20 @@ define(function (require, exports, module) {
           startTime: new Date().getTime()
         }
       };
-      modelOutput.result = progressObj;
+      modelOutput.$update({result: progressObj});
       $.ajax({
         type: "POST",
         datatype: "json",
         url: serviceBase + "/evaluate",
-        data: {shellID: self.settings.shellID, code: code}
+        data: {
+          shellID: self.settings.shellID,
+          code: code,
+          evalId: evalId
+        }
       }).done(function (ret) {
-        modelOutput.result = ret;
-        bkHelper.refreshRootScope();
+        console.log("ignoring ret", ret);
+        //modelOutput.result = ret;
+        //bkHelper.refreshRootScope();
       }).fail(function (xhr, textStatus, error) {
         modelOutput.result = {
           type: "BeakerDisplay",

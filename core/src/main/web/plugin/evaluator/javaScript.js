@@ -155,8 +155,10 @@ define(function(require, exports, module) {
     cmMode: "javascript",
     background: "#FFE0F0",
     evaluate: function(code, modelOutput, evalId) {
-      var ref = new Firebase(window.fb.ROOT_URL + "_evaluations/" + evalId);
-      window.rrr = ref;
+      //var ref = new Firebase(window.fb.ROOT_URL + "_evaluations/" + evalId);
+
+      var outputRef = new Firebase(window.fb.ROOT_URL + "_evaluations/" + evalId + "/output");
+      var evalRef = new Firebase(window.fb.ROOT_URL + "_evaluations/" + evalId);
       return bkHelper.fcall(function() {
         var result;
         try {
@@ -168,7 +170,8 @@ define(function(require, exports, module) {
             object: "" + err
           };
         }
-        ref.update({"output": {"result": result}});
+        evalRef.update({"output": {"result": result}});
+        //outputRef.update({"result": result});
         //modelOutput.result = result;
       });
     },
