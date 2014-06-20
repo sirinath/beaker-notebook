@@ -19,136 +19,137 @@
  * For creating and configuring evaluators that evaluate Javascript code on
  *   a remote node server and update code cell results.
  */
-define(function(require, exports, module) {
-    'use strict';
-    var PLUGIN_NAME = "Node";
-    var COMMAND = "node/nodePlugin";
+define(function (require, exports, module) {
+  'use strict';
+  var PLUGIN_NAME = "Node";
+  var COMMAND = "node/nodePlugin";
 
-    var serviceBase = null;
+  var serviceBase = null;
 
-    var nodeProto = {
-        pluginName: PLUGIN_NAME,
-        cmMode: "javascript",
-        background: "#dbecb5",
-        newShell: function (shellID, cb) {
-            var self = this;
+  var nodeProto = {
+    pluginName: PLUGIN_NAME,
+    cmMode: "javascript",
+    background: "#dbecb5",
+    newShell: function (shellID, cb) {
+      var self = this;
 
-            if (!shellID) {
-                shellID = "";
-            }
-            //verify server is up and running before a new shell call is attempted
-            function checkNodeServerRunning() {
-                $.ajax({
-                    type: "GET",
-                    datatype: "json",
-                    url: serviceBase + "/pulse"
-                }).fail(function(){
-                    setTimeout(function () {
-                        checkNodeServerRunning();
-                    }, 2000)
-                }).done(function(){
-                    $.ajax({
-                        type: "POST",
-                        datatype: "json",
-                        url: serviceBase + "/shell",
-                        data: {shellid: shellID}
-                    }).done(function(response){
-                        shellID = response.shellID;
-                        cb(shellID);
-                    }).fail(function () {
-                        console.log("failed to create shell", arguments);
-                    });
-                })
-            }
+      if (!shellID) {
+        shellID = "";
+      }
+      //verify server is up and running before a new shell call is attempted
+      function checkNodeServerRunning() {
+        $.ajax({
+          type: "GET",
+          datatype: "json",
+          url: serviceBase + "/pulse"
+        }).fail(function () {
+          setTimeout(function () {
             checkNodeServerRunning();
-        },
-        evaluate: function (code, modelOutput) {
-            var self = this;
-            var progressObj = {
-                type: "BeakerDisplay",
-                innertype: "Progress",
-                object: {
-                    message: "submitting ...",
-                    startTime: new Date().getTime()
-                }
-            };
-            modelOutput.result = progressObj;
-            $.ajax({
-                type: "POST",
-                datatype: "json",
-                url: serviceBase + "/evaluate",
-                data: {shellID: self.settings.shellID, code: code}
-            }).done(function(ret) {
-                modelOutput.result = ret;
-                bkHelper.refreshRootScope();
-            }).fail(function(xhr, textStatus, error) {
-                modelOutput.result = {
-                    type: "BeakerDisplay",
-                    innertype: "Error",
-                    object: xhr.responseText
-                };
-            });
-        },
-        autocomplete: function (code, cpos, cb) {
-            console.log("Autocomplete Called: Not implemented");
-        },
-        exit: function (cb) {
-            console.log("Exit Called");
-            var self = this;
-            $.ajax({
-                type: "POST",
-                datatype: "json",
-                url: serviceBase + "/rest/node/exit",
-                data: { shellID: self.settings.shellID }
-            }).done(cb);
-        },
-        spec: {}
-    };
+          }, 2000)
+        }).done(function () {
+          $.ajax({
+            type: "POST",
+            datatype: "json",
+            url: serviceBase + "/shell",
+            data: {shellid: shellID}
+          }).done(function (response) {
+            shellID = response.shellID;
+            cb(shellID);
+          }).fail(function () {
+            console.log("failed to create shell", arguments);
+          });
+        })
+      }
 
-    var shellReadyDeferred = bkHelper.newDeferred();
-    var init = function () {
-      bkHelper.locatePluginService(PLUGIN_NAME, {
-        command: COMMAND,
-        startedIndicator: "Server Starting",
-        recordOutput: "true"
-        }).success(function (ret) {
-            serviceBase = ret;
-            var NodeShell = function (settings, doneCB) {
-                var self = this;
-                var setShellIdCB = function (id) {
-                    if (id !== settings.shellID) {
-                        console.log("A new Node shell was created.");
-                    }
-                    settings.shellID = id;
-                    self.settings = settings;
-                    if (doneCB) {
-                      doneCB(self);
-                    }
-                };
-                if (!settings.shellID) {
-                    settings.shellID = "";
-                }
-                this.newShell(settings.shellID, setShellIdCB);
-                this.perform = function (what) {
-                    var action = this.spec[what].action;
-                    this[action]();
-                };
-            };
-            NodeShell.prototype = nodeProto;
-            shellReadyDeferred.resolve(NodeShell);
-        }).error(function () {
-            alert('fail');
-            console.log("process start failed", arguments);
-        });
-    };
-    init();
+      checkNodeServerRunning();
+    },
+    evaluate: function (code, modelOutput) {
+      var self = this;
+      var progressObj = {
+        type: "BeakerDisplay",
+        innertype: "Progress",
+        object: {
+          message: "submitting ...",
+          startTime: new Date().getTime()
+        }
+      };
+      modelOutput.result = progressObj;
+      $.ajax({
+        type: "POST",
+        datatype: "json",
+        url: serviceBase + "/evaluate",
+        data: {shellID: self.settings.shellID, code: code}
+      }).done(function (ret) {
+        modelOutput.result = ret;
+        bkHelper.refreshRootScope();
+      }).fail(function (xhr, textStatus, error) {
+        modelOutput.result = {
+          type: "BeakerDisplay",
+          innertype: "Error",
+          object: xhr.responseText
+        };
+      });
+    },
+    autocomplete: function (code, cpos, cb) {
+      console.log("Autocomplete Called: Not implemented");
+    },
+    exit: function (cb) {
+      console.log("Exit Called");
+      var self = this;
+      $.ajax({
+        type: "POST",
+        datatype: "json",
+        url: serviceBase + "/rest/node/exit",
+        data: { shellID: self.settings.shellID }
+      }).done(cb);
+    },
+    spec: {}
+  };
 
-  exports.getEvaluatorFactory = function() {
-    return shellReadyDeferred.promise.then(function(Shell) {
+  var shellReadyDeferred = bkHelper.newDeferred();
+  var init = function () {
+    bkHelper.locatePluginService(PLUGIN_NAME, {
+      command: COMMAND,
+      startedIndicator: "Server Starting",
+      recordOutput: "true"
+    }).success(function (ret) {
+      serviceBase = ret;
+      var NodeShell = function (settings, doneCB) {
+        var self = this;
+        var setShellIdCB = function (id) {
+          if (id !== settings.shellID) {
+            console.log("A new Node shell was created.");
+          }
+          settings.shellID = id;
+          self.settings = settings;
+          if (doneCB) {
+            doneCB(self);
+          }
+        };
+        if (!settings.shellID) {
+          settings.shellID = "";
+        }
+        this.newShell(settings.shellID, setShellIdCB);
+        this.perform = function (what) {
+          var action = this.spec[what].action;
+          this[action]();
+        };
+      };
+      NodeShell.prototype = nodeProto;
+      shellReadyDeferred.resolve(NodeShell);
+    }).error(function () {
+      alert('fail');
+      console.log("process start failed", arguments);
+    });
+  };
+  init();
+
+  exports.getEvaluatorFactory = function () {
+    return shellReadyDeferred.promise.then(function (Shell) {
       return {
-        create: function(settings) {
+        create: function (settings) {
           var deferred = bkHelper.newDeferred();
-          new Shell(settings, function(shell) {
+          new Shell(settings, function (shell) {
             deferred.resolve(shell);
           });
           return deferred.promise;
@@ -157,5 +158,5 @@ define(function(require, exports, module) {
     });
   };
 
-    exports.name = PLUGIN_NAME;
+  exports.name = PLUGIN_NAME;
 });
