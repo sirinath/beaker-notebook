@@ -60,6 +60,7 @@
 
             _evaluations.$add({
               input: cell.input.body,
+              evaluator: evaluator.pluginName,
               output: {
                 result: "pending"
               }
