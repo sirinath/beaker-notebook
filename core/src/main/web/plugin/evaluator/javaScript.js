@@ -155,24 +155,44 @@ define(function(require, exports, module) {
     cmMode: "javascript",
     background: "#FFE0F0",
     evaluate: function(code, modelOutput, evalId) {
-      //var ref = new Firebase(window.fb.ROOT_URL + "_evaluations/" + evalId);
-
-      var outputRef = new Firebase(window.fb.ROOT_URL + "_evaluations/" + evalId + "/output");
+      var evaluationsRef = new Firebase(window.fb.ROOT_URL + "_evaluations");
       var evalRef = new Firebase(window.fb.ROOT_URL + "_evaluations/" + evalId);
+      //var outputRef = new Firebase(window.fb.ROOT_URL + "_evaluations/" + evalId + "/output");
+
       return bkHelper.fcall(function() {
-        var result;
-        try {
-          result = "" + eval(code);
-        } catch (err) {
-          result = {
-            type: "BeakerDisplay",
-            innertype: "Error",
-            object: "" + err
+        evaluationsRef.once("value", function(snapshot) {
+          var evaluations = snapshot.val();
+          console.log("evaluations = ", evaluations);
+          var evalIds = _(evaluations).keys();
+          var thisIndex = evalIds.indexOf(evalId);
+
+          var bk = {
+            $_: thisIndex > 0 ? evaluations[evalIds[thisIndex - 1]].output.result : null,
+            out: function(index) {
+              return evaluations[evalIds[index]].output.result;
+            },
+            updateThisOutput: function(value) {
+              evalRef.update({"output": {"result": value}}, function() {
+                bkHelper.refreshRootScope();
+              });
+            }
           };
-        }
-        evalRef.update({"output": {"result": result}});
-        //outputRef.update({"result": result});
-        //modelOutput.result = result;
+
+          window.eeee = snapshot.val();
+          var result;
+          try {
+            result = "" + eval(code);
+          } catch (err) {
+            result = {
+              type: "BeakerDisplay",
+              innertype: "Error",
+              object: "" + err
+            };
+          }
+          evalRef.update({"output": {"result": result}});
+          //outputRef.update({"result": result});
+          //modelOutput.result = result;
+        });
       });
     },
     autocomplete2: function(editor, options, cb) {
