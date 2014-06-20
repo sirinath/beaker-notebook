@@ -46,6 +46,9 @@
 
         // to be used in bkOutputDisplay
         $scope.outputDisplayModel = {
+          getEvalId: function() {
+            return $scope.model.eid;
+          },
           getCellModel: function() {
             var result = $scope.getOutputResult();
             if (result && result.type === "BeakerDisplay") {

@@ -4,6 +4,7 @@ var express = require('express');
 var http = require('http');
 var uuid = require('node-uuid');
 var Firebase = require('firebase');
+var _ = require('underscore');
 //
 //var myRootRef = new Firebase('https://glaring-fire-5327.firebaseIO.com');
 var fb = {
@@ -38,23 +39,59 @@ app.post('/evaluate', function (request, response) {
   var code = decodeURIComponent(request.body.code);
   var evalId = request.body.evalId;
 
-  var ref = new Firebase(fb.ROOT_URL + "_evaluations/" + evalId);
-  var bkUpdateThisOutput = function(value) {
-    ref.update({"output": {"result": value}});
-  };
+  var evaluationsRef = new Firebase(fb.ROOT_URL + "_evaluations");
+  var evalRef = new Firebase(fb.ROOT_URL + "_evaluations/" + evalId);
 
-  var evaluationResult = processCode(code, bkUpdateThisOutput);
-  if (evaluationResult.processed) {
-    response.statusCode = 200;
-  } else {
-    response.statusCode = 422;
-  }
-  var result = evaluationResult.evaluation.toString();
-  ref.update({"output": {"result": result}});
-  response.send(result);
+  evaluationsRef.once("value", function(snapshot) {
+    var evaluations = snapshot.val();
+
+    var evalIds = _(evaluations).keys();
+    var thisIndex = evalIds.indexOf(evalId);
+    var output = {
+      "begin_time": new Date().getTime(),
+      "result": "evaluating",
+      "evalId": evalId,
+      "eid": _(evaluations).keys().indexOf(evalId)
+    };
+    evalRef.update({
+      "output": output
+    });
+
+    var bk = {
+      $_: thisIndex > 0 ? evaluations[evalIds[thisIndex - 1]].output.result : null,
+      _out: _(_(evaluations).values()).map(function(it) {
+        return _.isObject(it.output.result) ? JSON.stringify(it.output.result) : it.output.result;
+      }),
+      out: function(index) {
+        return evaluations[evalIds[index]].output.result;
+      },
+      updateThisOutput: function(value) {
+        output.result = value;
+        output.last_update_time = new Date().getTime();
+        evalRef.update({"output": output}, function() {
+          bkHelper.refreshRootScope();
+          console.log("output", output);
+        });
+      }
+    };
+
+    var evaluationResult = processCode(code, bk);
+    if (evaluationResult.processed) {
+      response.statusCode = 200;
+    } else {
+      response.statusCode = 422;
+    }
+    var result = evaluationResult.evaluation.toString();
+    output.result = result;
+    output.end_time = new Date().getTime();
+    evalRef.update({"output": output});
+
+    response.send(result);
+
+  });
 });
 
-function processCode(code, bkUpdateThisOutput) {
+function processCode(code, bk) {
   var returnValue;
   var result;
   try {

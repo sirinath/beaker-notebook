@@ -194,7 +194,6 @@ define(function(require, exports, module) {
             }
           };
 
-          window.eeee = snapshot.val();
           var result;
           try {
             result = "" + eval(code);

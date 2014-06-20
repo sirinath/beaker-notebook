@@ -10,6 +10,7 @@
         "when": "2.8.0",
         "node-uuid": "1.4.1",
         "ws": "0.4.30",
-        "firebase": "1.0.17"
+        "firebase": "1.0.17",
+        "underscore": "1.6.0"
     }
 }

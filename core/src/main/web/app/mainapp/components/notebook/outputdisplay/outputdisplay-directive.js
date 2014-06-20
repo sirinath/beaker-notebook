@@ -33,7 +33,7 @@
           childScope = $rootScope.$new();
           childScope.model = scope.model;
           var directiveName = bkOutputDisplayFactory.getDirectiveName(type);
-          element.html("<div " + directiveName + " model='model'></div>");
+          element.html("<div>bk._out[{{model.getEvalId()}}]<span " + directiveName + " model='model'></span></div>");
           $compile(element.contents())(childScope);
         };
         scope.$watch("type", function(newType, oldType) {
