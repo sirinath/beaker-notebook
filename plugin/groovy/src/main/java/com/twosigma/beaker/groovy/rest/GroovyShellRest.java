@@ -19,6 +19,7 @@ import com.google.inject.Singleton;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import groovy.lang.GroovyShell;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,10 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.apache.http.HttpVersion;
+import org.apache.http.client.fluent.Request;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.entity.ContentType;
 import org.codehaus.groovy.control.CompilationFailedException;
 
 @Path("groovysh")
@@ -57,7 +62,8 @@ public class GroovyShellRest {
   @Path("evaluate")
   public SimpleEvaluationObject evaluate(
       @FormParam("shellId") String shellId,
-      @FormParam("code") String code) throws InterruptedException {
+      @FormParam("code") String code,
+      @FormParam("evalId") String evalId) throws InterruptedException, IOException, ClientProtocolException {
 
     SimpleEvaluationObject obj = new SimpleEvaluationObject(code);
     obj.started();
@@ -70,6 +76,27 @@ public class GroovyShellRest {
       return obj;
     }
     obj.finished(result);
+    {
+      //String body = "{\"output\": {\"result\": \"" + result + "\"}}";
+      //String response = Request.Put("https://glaring-fire-5327.firebaseIO.com/_evaluations/" + evalId + ".json")
+      String body = "\"" + result + "\"";
+      String response = Request.Put("https://glaring-fire-5327.firebaseIO.com/_evaluations/" + evalId + "/output/result.json")
+        .useExpectContinue()
+        .version(HttpVersion.HTTP_1_1)
+        .bodyString(body, ContentType.DEFAULT_TEXT)
+        .execute().returnContent().asString();
+    }
+    {
+      //String body = "{\"output\": {\"result\": \"" + result + "\"}}";
+      //String response = Request.Put("https://glaring-fire-5327.firebaseIO.com/_evaluations/" + evalId + ".json")
+      String body = "\"" + new Date().getTime() + "\"";
+      String response = Request.Put("https://glaring-fire-5327.firebaseIO.com/_evaluations/" + evalId + "/output/finish_time.json")
+        .useExpectContinue()
+        .version(HttpVersion.HTTP_1_1)
+        .bodyString(body, ContentType.DEFAULT_TEXT)
+        .execute().returnContent().asString();
+    }
+
     return obj;
   }
 

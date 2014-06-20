@@ -76,7 +76,7 @@ define(function(require, exports, module) {
             console.log("failed to create shell", arguments);
           });
     },
-    evaluate: function(code, modelOutput) {
+    evaluate: function(code, modelOutput, evalId) {
       var deferred = Q.defer();
       var self = this;
       var progressObj = {
@@ -92,41 +92,49 @@ define(function(require, exports, module) {
         type: "POST",
         datatype: "json",
         url: serviceBase + "/rest/groovysh/evaluate",
-        data: {shellId: self.settings.shellID, code: code}
-      }).done(function(ret) {
-        var onUpdatableResultUpdate = function(update) {
-          modelOutput.result = update;
-          bkHelper.refreshRootScope();
-        };
-        var onEvalStatusUpdate = function(evaluation) {
-          modelOutput.result.status = evaluation.status;
-          if (evaluation.status === "FINISHED") {
-            cometdUtil.unsubscribe(evaluation.update_id);
-            modelOutput.result = evaluation.result;
-            if (evaluation.result.update_id) {
-              cometdUtil.subscribe(evaluation.result.update_id, onUpdatableResultUpdate);
-            }
-            modelOutput.elapsedTime = new Date().getTime() - progressObj.object.startTime;
-            deferred.resolve();
-          } else if (evaluation.status === "ERROR") {
-            cometdUtil.unsubscribe(evaluation.update_id);
-            modelOutput.result = {
-              type: "BeakerDisplay",
-              innertype: "Error",
-              object: evaluation.result
-            };
-            modelOutput.elapsedTime = new Date().getTime() - progressObj.object.startTime;
-            deferred.resolve();
-          } else if (evaluation.status === "RUNNING") {
-            progressObj.object.message = "evaluating ...";
-            modelOutput.result = progressObj;
-          }
-          bkHelper.refreshRootScope();
-        };
-        onEvalStatusUpdate(ret);
-        if (ret.update_id) {
-          cometdUtil.subscribe(ret.update_id, onEvalStatusUpdate);
+        data: {
+          shellId: self.settings.shellID,
+          code: code,
+          evalId: evalId
         }
+      }).done(function(ret) {
+        console.log(modelOutput.result);
+        console.log(modelOutput.finish_time);
+        //modelOutput.elapsedTime = parseInt(modelOutput.finish_time) - progressObj.object.startTime;
+        deferred.resolve();
+//        var onUpdatableResultUpdate = function(update) {
+//          modelOutput.result = update;
+//          bkHelper.refreshRootScope();
+//        };
+//        var onEvalStatusUpdate = function(evaluation) {
+//          modelOutput.result.status = evaluation.status;
+//          if (evaluation.status === "FINISHED") {
+//            cometdUtil.unsubscribe(evaluation.update_id);
+//            modelOutput.result = evaluation.result;
+//            if (evaluation.result.update_id) {
+//              cometdUtil.subscribe(evaluation.result.update_id, onUpdatableResultUpdate);
+//            }
+//            modelOutput.elapsedTime = new Date().getTime() - progressObj.object.startTime;
+//            deferred.resolve();
+//          } else if (evaluation.status === "ERROR") {
+//            cometdUtil.unsubscribe(evaluation.update_id);
+//            modelOutput.result = {
+//              type: "BeakerDisplay",
+//              innertype: "Error",
+//              object: evaluation.result
+//            };
+//            modelOutput.elapsedTime = new Date().getTime() - progressObj.object.startTime;
+//            deferred.resolve();
+//          } else if (evaluation.status === "RUNNING") {
+//            progressObj.object.message = "evaluating ...";
+//            modelOutput.result = progressObj;
+//          }
+//          bkHelper.refreshRootScope();
+//        };
+//        onEvalStatusUpdate(ret);
+//        if (ret.update_id) {
+//          cometdUtil.subscribe(ret.update_id, onEvalStatusUpdate);
+//        }
       });
       return deferred.promise;
     },
