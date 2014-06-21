@@ -34,7 +34,8 @@
     'bk.evaluatorManager',
     'bk.evaluateJobManager',
     'bk.notebook',
-    'bk.pluginManager'
+    'bk.pluginManager',
+    'firebase'
   ]);
 
   /**
@@ -52,7 +53,8 @@
       bkCellMenuPluginManager,
       bkNotebookVersionManager,
       bkEvaluatorManager,
-      bkEvaluateJobManager) {
+      bkEvaluateJobManager,
+      $firebase) {
     return {
       restrict: 'E',
       templateUrl: "./app/mainapp/mainapp.html",
@@ -124,6 +126,18 @@
               for (var i = 0; i < notebookModel.evaluators.length; ++i) {
                 addEvaluator(notebookModel.evaluators[i], !isOpeningExistingSession);
               }
+            }
+            if (isOpeningExistingSession) {
+              // update output from firebase
+              _(notebookModel.cells).each(function(cell) {
+                if (cell.type === "code") {
+                  var evalId = cell.output.evalId;
+                  if (!_.isEmpty(evalId)) {
+                    var out = new Firebase(window.fb.ROOT_URL + "_evaluations/" + evalId + "/output");
+                    cell.output = $firebase(out);
+                  }
+                }
+              });
             }
             document.title = bkSessionManager.getNotebookTitle();
             if (!isOpeningExistingSession) {
