@@ -196,7 +196,10 @@ define(function(require, exports, module) {
 
           var result;
           try {
-            result = "" + eval(code);
+            result = eval(code);
+            if (!_(result).isNumber()) {
+              result = result.toString();
+            }
           } catch (err) {
             result = {
               type: "BeakerDisplay",

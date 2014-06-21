@@ -81,7 +81,10 @@ app.post('/evaluate', function (request, response) {
     } else {
       response.statusCode = 422;
     }
-    var result = evaluationResult.evaluation.toString();
+    var result = evaluationResult.evaluation;
+    if (!_(result).isNumber()) {
+      result = result.toString();
+    }
     output.result = result;
     output.end_time = new Date().getTime();
     evalRef.update({"output": output});

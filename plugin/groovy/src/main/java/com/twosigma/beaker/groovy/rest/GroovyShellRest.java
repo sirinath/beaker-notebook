@@ -80,7 +80,7 @@ public class GroovyShellRest {
 
     String last = "null";
     List<String> _keys = new ArrayList<String>();
-    List<String> _out = new ArrayList<String>();
+    List<Object> _out = new ArrayList<Object>();
     int thisIndex = -1;
     {
       String response = Request.Get("https://glaring-fire-5327.firebaseIO.com/_evaluations.json")
@@ -108,7 +108,11 @@ public class GroovyShellRest {
         JSONObject eval = (JSONObject) evaluators.get(it2.next());
         JSONObject output = (JSONObject) eval.get("output");
         //JSONObject result = (JSONObject) output.get("result");
-        _out.add(output.get("result").toString());
+        if (output.get("result") instanceof Number) {
+          _out.add(output.get("result"));
+        } else {
+          _out.add(output.get("result").toString());
+        }
       }
     }
     {
@@ -149,10 +153,13 @@ public class GroovyShellRest {
     }
     obj.finished(result);
     {
+      if (!(result instanceof Number)) {
+        result = "\"" + result + "\"";
+      }
       long endTime = new Date().getTime();
       String body = "{" +
           "\"begin_time\":" + beginTime + "," +
-          "\"result\": \"" + result + "\"" + "," +
+          "\"result\": " + result + "" + "," +
           "\"evalId\":" + "\"" + evalId + "\"" + "," +
           "\"eid\":" + thisIndex + "," +
           "\"end_time\":" + "\"" + endTime + "\"" +
