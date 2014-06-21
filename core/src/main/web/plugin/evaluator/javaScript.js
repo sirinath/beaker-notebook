@@ -154,10 +154,10 @@ define(function(require, exports, module) {
     pluginName: PLUGIN_NAME,
     cmMode: "javascript",
     background: "#FFE0F0",
-    evaluate: function(code, modelOutput, evalId) {
-      var evaluationsRef = new Firebase(window.fb.ROOT_URL + "_evaluations");
-      var evalRef = new Firebase(window.fb.ROOT_URL + "_evaluations/" + evalId);
-      //var outputRef = new Firebase(window.fb.ROOT_URL + "_evaluations/" + evalId + "/output");
+    evaluate: function(code, modelOutput, evalId, sessionId) {
+      var evaluationsRef = new Firebase(window.fb.ROOT_URL + sessionId + "/_evaluations");
+      var evalRef = new Firebase(window.fb.ROOT_URL + sessionId + "/_evaluations/" + evalId);
+      //var outputRef = new Firebase(window.fb.ROOT_URL + sessionId + "_evaluations/" + evalId + "/output");
 
       return bkHelper.fcall(function() {
         evaluationsRef.once("value", function(snapshot) {

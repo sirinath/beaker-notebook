@@ -72,7 +72,8 @@ public class GroovyShellRest {
   public SimpleEvaluationObject evaluate(
       @FormParam("shellId") String shellId,
       @FormParam("code") String code,
-      @FormParam("evalId") String evalId) throws InterruptedException, IOException, ClientProtocolException, ParseException {
+      @FormParam("evalId") String evalId,
+      @FormParam("sessionId") String sessionId) throws InterruptedException, IOException, ClientProtocolException, ParseException {
 
     long beginTime = new Date().getTime();
 
@@ -83,7 +84,7 @@ public class GroovyShellRest {
     List<Object> _out = new ArrayList<Object>();
     int thisIndex = -1;
     {
-      String response = Request.Get("https://glaring-fire-5327.firebaseIO.com/_evaluations.json")
+      String response = Request.Get("https://glaring-fire-5327.firebaseIO.com/" + sessionId + "/_evaluations.json")
         .useExpectContinue()
         .version(HttpVersion.HTTP_1_1)
         .connectTimeout(1000)
@@ -123,7 +124,7 @@ public class GroovyShellRest {
           "\"eid\":" + thisIndex +
           "}";
       //System.out.println("body1 = \n" + body);
-      String response = Request.Put("https://glaring-fire-5327.firebaseIO.com/_evaluations/" + evalId + "/output.json")
+      String response = Request.Put("https://glaring-fire-5327.firebaseIO.com/" + sessionId + "/_evaluations/" + evalId + "/output.json")
         .useExpectContinue()
         .version(HttpVersion.HTTP_1_1)
         .bodyString(body, ContentType.DEFAULT_TEXT)
@@ -165,7 +166,7 @@ public class GroovyShellRest {
           "\"end_time\":" + "\"" + endTime + "\"" +
           "}";
       //System.out.println("body2 = \n" + body);
-      String response = Request.Put("https://glaring-fire-5327.firebaseIO.com/_evaluations/" + evalId + "/output.json")
+      String response = Request.Put("https://glaring-fire-5327.firebaseIO.com/" + sessionId + "/_evaluations/" + evalId + "/output.json")
         .useExpectContinue()
         .version(HttpVersion.HTTP_1_1)
         .bodyString(body, ContentType.DEFAULT_TEXT)

@@ -133,7 +133,7 @@
                 if (cell.type === "code") {
                   var evalId = cell.output.evalId;
                   if (!_.isEmpty(evalId)) {
-                    var out = new Firebase(window.fb.ROOT_URL + "_evaluations/" + evalId + "/output");
+                    var out = new Firebase(window.fb.ROOT_URL + sessionId + "/_evaluations/" + evalId + "/output");
                     cell.output = $firebase(out);
                   }
                 }

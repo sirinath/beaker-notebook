@@ -76,7 +76,7 @@ define(function(require, exports, module) {
             console.log("failed to create shell", arguments);
           });
     },
-    evaluate: function(code, modelOutput, evalId) {
+    evaluate: function(code, modelOutput, evalId, sessionId) {
       var deferred = Q.defer();
       var self = this;
       var progressObj = {
@@ -95,7 +95,8 @@ define(function(require, exports, module) {
         data: {
           shellId: self.settings.shellID,
           code: code,
-          evalId: evalId
+          evalId: evalId,
+          sessionId: sessionId
         }
       }).done(function(ret) {
         console.log(modelOutput.result);

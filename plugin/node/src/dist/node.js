@@ -63,7 +63,7 @@ define(function (require, exports, module) {
 
       checkNodeServerRunning();
     },
-    evaluate: function (code, modelOutput, evalId) {
+    evaluate: function (code, modelOutput, evalId, sessionId) {
       var self = this;
       var progressObj = {
         type: "BeakerDisplay",
@@ -81,7 +81,8 @@ define(function (require, exports, module) {
         data: {
           shellID: self.settings.shellID,
           code: code,
-          evalId: evalId
+          evalId: evalId,
+          sessionId: sessionId
         }
       }).done(function (ret) {
         console.log("ignoring ret", ret);

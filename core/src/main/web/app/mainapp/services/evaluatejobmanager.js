@@ -18,26 +18,7 @@
   'use strict';
   var module = angular.module('bk.evaluateJobManager', ['bk.utils', 'bk.evaluatorManager', 'firebase']);
 
-  module.factory('__evaluations', function($firebase) {
-    var ref = new Firebase(window.fb.ROOT_URL + "_evaluations");
-    return ref;
-  });
-
-
-  module.factory('bkEvaluateJobManager', function(bkUtils, bkEvaluatorManager, __evaluations, $firebase) {
-
-    var _evaluations = $firebase(__evaluations);
-//    _evaluations.$add({input: 1, output:2213});
-//    _evaluations.$add({input: 12, output:2213});
-//    _evaluations.$add({input: 123, output:2213});
-//    _evaluations.$add({input: 1234, output:2213});
-
-    window.__evaluations = __evaluations;
-    window._evaluations = _evaluations;
-    __evaluations.on("value", function(snapshot) {
-      window.eve = snapshot.val();
-    });
-
+  module.factory('bkEvaluateJobManager', function(bkUtils, bkEvaluatorManager, $firebase, bkSessionManager) {
 
     var setOutputCellText = function(cell, text) {
       if (!cell.output) {
@@ -58,7 +39,7 @@
         if (evaluator) {
           var evalP = lastPromise.then(function() {
 
-            _evaluations.$add({
+            bkSessionManager.getEvaluations().$add({
               input: cell.input.body,
               evaluator: evaluator.pluginName,
               output: {
@@ -67,19 +48,21 @@
             }).then(function(ref) {
               return ref.name(); // evalId
             }).then(function(evalId) {
+              var sessionId = bkSessionManager.getSessionId();
+              console.log("SessionID = ", bkSessionManager.getSessionId());
               console.log("eval ID = ", evalId);
 //              var outputRef = new Firebase(window.fb.ROOT_URL + "_evaluations/" + evalId + "/output");
 //              outputRef.on("value", function(snapshot) {
 //                console.log("AAA", snapshot.val());
 //                cell.output = snapshot.val();
 //              });
-              var out = new Firebase(window.fb.ROOT_URL + "_evaluations/" + evalId + "/output");
+              var out = new Firebase(window.fb.ROOT_URL + sessionId + "/_evaluations/" + evalId + "/output");
               cell.output = $firebase(out);
               _theEvaluator = evaluator;
               bkUtils.log("evaluate", {
                 plugin: evaluator.pluginName,
                 length: cell.input.body.length});
-              return _theEvaluator.evaluate(cell.input.body, cell.output, evalId);
+              return _theEvaluator.evaluate(cell.input.body, cell.output, evalId, sessionId);
             });
           });
           evalP.catch(function(ret) {

@@ -38,9 +38,10 @@ app.post('/evaluate', function (request, response) {
   var shellID = request.body.shellID;
   var code = decodeURIComponent(request.body.code);
   var evalId = request.body.evalId;
+  var sessionId = request.body.sessionId;
 
-  var evaluationsRef = new Firebase(fb.ROOT_URL + "_evaluations");
-  var evalRef = new Firebase(fb.ROOT_URL + "_evaluations/" + evalId);
+  var evaluationsRef = new Firebase(fb.ROOT_URL + sessionId + "/_evaluations");
+  var evalRef = new Firebase(fb.ROOT_URL + sessionId + "/_evaluations/" + evalId);
 
   evaluationsRef.once("value", function(snapshot) {
     var evaluations = snapshot.val();

@@ -23,10 +23,12 @@
     'bk.session',
     'bk.notebookCellModelManager',
     'bk.recentMenu',
-    'bk.evaluatorManager'
+    'bk.evaluatorManager',
+    'firebase'
   ]);
 
   module.factory('bkSessionManager', function(
+      $firebase,
       bkUtils,
       bkSession,
       bkNotebookCellModelManager,
@@ -57,6 +59,8 @@
     var _format = null;
     var _sessionId = null;
     var _edited = false;
+    var __evaluations = null;
+    var _evaluations = null;
 
     var _notebookModel = (function() {
       var _v = {};
@@ -137,6 +141,13 @@
         _notebookModel.set(notebookModel);
         _edited = !!edited;
         _sessionId = sessionId;
+
+        __evaluations = new Firebase(window.fb.ROOT_URL + _sessionId + "/_evaluations");
+        _evaluations = $firebase(__evaluations);
+        window._evaluations = _evaluations;
+//        __evaluations.on("value", function(snapshot) {
+//          window.eve = snapshot.val();
+//        });
       },
       clear: function() {
         bkEvaluatorManager.reset();
@@ -147,6 +158,8 @@
         _notebookModel.reset();
         _sessionId = null;
         _edited = false;
+        __evaluations = null;
+        _evaluations = null;
       },
       close: function() {
         var self = this;
@@ -196,6 +209,9 @@
       },
       getSessionId: function() {
         return _sessionId;
+      },
+      getEvaluations: function() {
+        return _evaluations;
       },
       // TODO, move the following impl to a dedicated notebook model manager
       // but still expose it here
