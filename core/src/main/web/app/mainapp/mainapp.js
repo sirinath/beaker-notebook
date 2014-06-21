@@ -133,6 +133,7 @@
           };
           return {
             openUri: function(notebookUri, uriType, readOnly, format, retry, retryCountMax) {
+              fb.reset();
               if (!notebookUri) {
                 bkCoreManager.show1ButtonModal("Failed to open notebook, notebookUri is empty");
                 return;
@@ -191,6 +192,7 @@
             });
           },
           defaultNotebook: function() {
+            fb.reset();
             bkUtils.getDefaultNotebook().then(function(notebookModel) {
               var notebookUri = null;
               var uriType = null;
