@@ -69,8 +69,7 @@ app.post('/evaluate', function (request, response) {
         output.result = value;
         output.last_update_time = new Date().getTime();
         evalRef.update({"output": output}, function() {
-          bkHelper.refreshRootScope();
-          console.log("output", output);
+          //console.log("output", output);
         });
       }
     };
