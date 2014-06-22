@@ -95,6 +95,9 @@ app.post('/evaluate', function (request, response) {
 });
 
 function processCode(code, bk) {
+  var bk_out = bk._out;
+  var bk_ = bk_out.length > 1 ? bk_out[bk_out.length - 2] : null;
+
   var returnValue;
   var result;
   try {

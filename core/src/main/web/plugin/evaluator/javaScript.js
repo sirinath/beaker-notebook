@@ -176,14 +176,13 @@ define(function(require, exports, module) {
           });
           bkHelper.refreshRootScope();
 
+          var bk_out = _(_(evaluations).values()).map(function(it) {
+            return _.isObject(it.output.result) ? JSON.stringify(it.output.result) : it.output.result;
+          });
+          var bk_ = bk_out.length > 1 ? bk_out[bk_out.length - 2] : null;
           var bk = {
-            $_: thisIndex > 0 ? evaluations[evalIds[thisIndex - 1]].output.result : null,
-            _out: _(_(evaluations).values()).map(function(it) {
-              return _.isObject(it.output.result) ? JSON.stringify(it.output.result) : it.output.result;
-            }),
-            out: function(index) {
-              return evaluations[evalIds[index]].output.result;
-            },
+            $_: bk_,
+            _out: bk_out,
             updateThisOutput: function(value) {
               output.result = value;
               output.last_update_time = new Date().getTime();

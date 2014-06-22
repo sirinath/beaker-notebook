@@ -139,6 +139,8 @@ public class GroovyShellRest {
     bk.put("$_", _last);
     bk.put("_out", _out);
     shell.setVariable("bk", bk);
+    shell.setVariable("bk_out", _out);
+    shell.setVariable("bk_", _last);
 
     Object result;
     try {
