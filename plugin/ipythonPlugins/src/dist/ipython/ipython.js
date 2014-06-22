@@ -113,10 +113,11 @@ define(function(require, exports, module) {
       };
       bkHelper.fcall(spin);
     },
-    evaluate: function(code, modelOutput) {
+    evaluate: function(code, modelOutput, evalId, sessionId) {
       if (_theCancelFunction) {
         throw "multiple evaluation at the same time is not supported";
       }
+      code = 'import urllib2, json, collections;bk_out = [e[1]["output"]["result"] for e in sorted(json.loads(urllib2.urlopen("https://glaring-fire-5327.firebaseio.com/' + sessionId + '/_evaluations.json").read()).items())];bk_=bk_out[-2] if len(bk_out)>1 else None;' + code;
 
       // utils
       var emptyOutputResult = function() {
