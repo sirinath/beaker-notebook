@@ -149,12 +149,91 @@ define(function(require, exports, module) {
     return getCompletions(token, context, keywords, options);
   }
 
+  var BkTable = function(td) {
+    var t = {};
+    _(td.columnNames).each(function(cname, i) {
+      if (_.isEmpty(cname)) {
+        cname = "index";
+      }
+      var colValues;
+      if (cname === "Date") {
+        colValues = _(td.values).map(function(it) { return Date.parse(it[i]); });
+      } else {
+        colValues = _(td.values).map(function(it) { return parseFloat(it[i].trim()); });
+      }
+      colValues.name = cname;
+      t[cname] = colValues;
+    });
+    return t;
+  };
+
+  var ColorFactory = (function() {
+    var colors = ['#C0504D', '#4F81BD', '#9BBB59', '#F79646', '#8064A2'];
+    var i = 0;
+    return {
+      getColor: function() {
+        return colors[i++];
+      },
+      reset: function() {
+        i = 0;
+      }
+    }
+  })();
+
+  var Line = function(x, y, color) {
+    return {
+      legend: y.name,
+      color: !_.isEmpty(color) ? color : ColorFactory.getColor(),
+      type: 'line',
+      interpolation: 'linear',
+      width: 3,
+      points: _(_.zip(x, y)).map(function (it) {
+        return _.object(["x", "y"], it);
+      })
+    };
+  };
+
+  var Bars = function(x, y, color) {
+    return {
+      legend: y.name,
+      color: !_.isEmpty(color) ? color : ColorFactory.getColor(),
+      type: 'bar',
+      interpolation: 'linear',
+      width: 75000000,
+      points: _(_.zip(x, y)).map(function (it) {
+        return _.object(["x", "y"], it);
+      })
+    };
+  };
+
+  var CombinedPlot = function (gg1, gg2) {
+    return {
+      "type": "CombinedPlot",
+      "plotTitle": "Mummy Combined Plot",
+      "plots": [
+        {
+          "xCursor": { style: "solid", color: "#003366", width: 3},
+          "yCursor": { style: "dash", color: "#003366", width: 2 },
+          "xCoords": false,
+          "data": gg1
+        },
+        {
+          "xCursor": { style: "solid", color: "#003366", width: 3},
+          "yCursor": { style: "dash", color: "#003366", width: 2 },
+          "height": 120,
+          "data": gg2
+        }
+      ]
+    };
+  };
 
   var JavaScript_0 = {
     pluginName: PLUGIN_NAME,
     cmMode: "javascript",
     background: "#FFE0F0",
     evaluate: function(code, modelOutput, evalId, sessionId) {
+      ColorFactory.reset();
+
       var evaluationsRef = new Firebase(window.fb.ROOT_URL + sessionId + "/_evaluations");
       var evalRef = new Firebase(window.fb.ROOT_URL + sessionId + "/_evaluations/" + evalId);
       //var outputRef = new Firebase(window.fb.ROOT_URL + sessionId + "_evaluations/" + evalId + "/output");
@@ -196,9 +275,9 @@ define(function(require, exports, module) {
           var result;
           try {
             result = eval(code);
-            if (!_(result).isNumber()) {
-              result = result.toString();
-            }
+//            if (!_(result).isNumber()) {
+//              result = result.toString();
+//            }
           } catch (err) {
             result = {
               type: "BeakerDisplay",
@@ -209,9 +288,9 @@ define(function(require, exports, module) {
           output.result = result;
           output.end_time = new Date().getTime();
 
-          evalRef.update({"output": output});
+          //evalRef.update({"output": output});
           //outputRef.update({"result": result});
-          //modelOutput.result = result;
+          modelOutput.result = result;
         });
       });
     },

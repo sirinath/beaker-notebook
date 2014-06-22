@@ -22,7 +22,7 @@
   beaker.bkoDirective('Table', ["bkCellMenuPluginManager", function(bkCellMenuPluginManager) {
     var CELL_TYPE = "bko-tabledisplay";
     return {
-      template: '<div class="slickgrid" style="height:500px;"></div>',
+      template: '<div class="slickgrid" style="height:350px;"></div>',
       controller: function($scope) {
         $scope.getShareMenuPlugin = function() {
           return bkCellMenuPluginManager.getPlugin(CELL_TYPE);

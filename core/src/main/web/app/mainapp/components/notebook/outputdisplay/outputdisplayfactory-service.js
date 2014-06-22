@@ -64,11 +64,15 @@
         template: "<div></div>",
         controller: function($scope, bkCellMenuPluginManager) {
           $scope.getShareMenuPlugin = function() {
-            return bkCellMenuPluginManager.getPlugin("bko-html");
+            // the following cellType needs to match
+            //plugin.cellType = "outputDisplayHtml"; in dynamically loaded outputDisplay_bkTableDisplay.js
+            var cellType = "outputDisplayHtml";
+            return bkCellMenuPluginManager.getPlugin(cellType);
           };
-          $scope.$watch("getShareMenuPlugin()", function() {
-            var newItems = bkCellMenuPluginManager.getMenuItems("bko-html", $scope);
-            $scope.model.resetShareMenuItems(newItems);
+          $scope.$watch("getShareMenuPlugin()", function(getShareMenu) {
+            if (getShareMenu && $scope.model.resetShareMenuItems) {
+              $scope.model.resetShareMenuItems(getShareMenu($scope));
+            }
           });
         },
         link: function(scope, element, attrs) {
@@ -123,6 +127,8 @@
       "BeakerDisplay": ["BeakerDisplay", "Text"],
       "Plot": ["Chart", "Text"],
       "TimePlot": ["Chart", "Text"],
+      "LinePlot": ["LinePlot"],
+      "CombinedPlot": ["CombinedPlot"],
       "HiddenOutputCell": ["Hidden"],
       "Warning": ["Warning"],
       "BeakerOutputContainerDisplay": ["OutputContainer", "Text"],
