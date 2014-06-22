@@ -117,11 +117,35 @@ define(function(require, exports, module) {
       if (_theCancelFunction) {
         throw "multiple evaluation at the same time is not supported";
       }
-      code = 'import urllib2, json, collections;bk_out = [e[1]["output"]["result"] for e in sorted(json.loads(urllib2.urlopen("https://glaring-fire-5327.firebaseio.com/' + sessionId + '/_evaluations.json").read()).items())];bk_=bk_out[-2] if len(bk_out)>1 else None;' + code;
+      var mcode = 'import urllib2, json, collections;bk_out = [e[1]["output"]["result"] for e in sorted(json.loads(urllib2.urlopen("https://glaring-fire-5327.firebaseio.com/' + sessionId + '/_evaluations.json").read()).items())];bk_=bk_out[-2] if len(bk_out)>1 else None;' + code;
+
+      var evaluationsRef = new Firebase(window.fb.ROOT_URL + sessionId + "/_evaluations");
+      var evalRef = new Firebase(window.fb.ROOT_URL + sessionId + "/_evaluations/" + evalId);
+
+      var thisIndex = "";
+      evaluationsRef.once("value", function(snapshot) {
+        var evaluations = snapshot.val();
+        thisIndex = _(evaluations).keys().length - 1;
+      });
+
+      var foutout = {
+        "begin_time": new Date().getTime(),
+        "evalId": evalId,
+        "eid": thisIndex
+      };
+      evalRef.update({
+        "output": foutout
+      });
+
+
 
       // utils
       var emptyOutputResult = function() {
         modelOutput.result = "";
+        foutout.result = modelOutput.result;
+        evalRef.update({
+          "output": foutout
+        });
       };
       var ensureOutputIsHtml = function() {
         if (!modelOutput.result ||
@@ -137,10 +161,18 @@ define(function(require, exports, module) {
       var setOutputResult = function(result) {
         ensureOutputIsHtml();
         modelOutput.result.object = result;
+        foutout.result = modelOutput.result;
+        evalRef.update({
+          "output": foutout
+        });
       };
       var appendToResult = function(txtToAppend) {
         ensureOutputIsHtml();
         modelOutput.result.object += txtToAppend;
+        foutout.result = modelOutput.result;
+        evalRef.update({
+          "output": foutout
+        });
       };
 
       // begin
@@ -157,12 +189,20 @@ define(function(require, exports, module) {
         }
       };
       modelOutput.result = progressObj;
+      foutout.result = modelOutput.result;
+      evalRef.update({
+        "output": foutout
+      });
       modelOutput.outputArrived = false;
       _theCancelFunction = function() {
         var kernel = kernels[self.settings.shellID];
         kernel.interrupt();
         deferred.reject("cancelled by user");
         modelOutput.result = "canceling ...";
+        foutout.result = modelOutput.result;
+        evalRef.update({
+          "output": foutout
+        });
       };
       var execute_reply = function(msg) {
         if (!ipyVersion1) {
@@ -200,6 +240,10 @@ define(function(require, exports, module) {
             innertype: "Error",
             object: (content.ename === "KeyboardInterrupt") ? "Interrupted" : [content.evalue, trace]
           };
+          foutout.result = modelOutput.result;
+          evalRef.update({
+            "output": foutout
+          });
         } else if (type === "stream") {
           var json = JSON.stringify({evaluator: "ipython",
                                      type: content.name,
@@ -218,6 +262,10 @@ define(function(require, exports, module) {
           var table = bkHelper.findTable(elem[0]);
           if (table) {
             modelOutput.result = table;
+            foutout.result = modelOutput.result;
+            evalRef.update({
+              "output": foutout
+            });
           } else {
             appendToResult(elem.html());
           }
@@ -233,7 +281,7 @@ define(function(require, exports, module) {
         shell: {reply: execute_reply},
         iopub: {output: output}
       };
-      kernel.execute(code, callbacks, {silent: false});
+      kernel.execute(mcode, callbacks, {silent: false});
       deferred.promise.finally(function() {
         _theCancelFunction = null;
       });
