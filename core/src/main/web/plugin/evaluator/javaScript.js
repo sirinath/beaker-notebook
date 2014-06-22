@@ -180,9 +180,9 @@ define(function(require, exports, module) {
     }
   })();
 
-  var Line = function(x, y, color) {
+  var Line = function(x, y, name, color) {
     return {
-      legend: y.name,
+      legend: !_.isEmpty(name) ? name : y.name,
       color: !_.isEmpty(color) ? color : ColorFactory.getColor(),
       type: 'line',
       interpolation: 'linear',
@@ -193,9 +193,9 @@ define(function(require, exports, module) {
     };
   };
 
-  var Bars = function(x, y, color) {
+  var Bars = function(x, y, name, color) {
     return {
-      legend: y.name,
+      legend: !_.isEmpty(name) ? name : y.name,
       color: !_.isEmpty(color) ? color : ColorFactory.getColor(),
       type: 'bar',
       interpolation: 'linear',
@@ -256,7 +256,8 @@ define(function(require, exports, module) {
           bkHelper.refreshRootScope();
 
           var bk_out = _(_(evaluations).values()).map(function(it) {
-            return _.isObject(it.output.result) ? JSON.stringify(it.output.result) : it.output.result;
+            //return _.isObject(it.output.result) ? JSON.stringify(it.output.result) : it.output.result;
+            return it.output.result;
           });
           var bk_ = bk_out.length > 1 ? bk_out[bk_out.length - 2] : null;
           var bk = {
@@ -288,9 +289,9 @@ define(function(require, exports, module) {
           output.result = result;
           output.end_time = new Date().getTime();
 
-          //evalRef.update({"output": output});
+          evalRef.update({"output": output});
           //outputRef.update({"result": result});
-          modelOutput.result = result;
+          //modelOutput.result = result;
         });
       });
     },
