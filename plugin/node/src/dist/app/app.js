@@ -61,7 +61,8 @@ app.post('/evaluate', function (request, response) {
     var bk = {
       $_: thisIndex > 0 ? evaluations[evalIds[thisIndex - 1]].output.result : null,
       _out: _(_(evaluations).values()).map(function(it) {
-        return _.isObject(it.output.result) ? JSON.stringify(it.output.result) : it.output.result;
+        //return _.isObject(it.output.result) ? JSON.stringify(it.output.result) : it.output.result;
+        return it.output.result;
       }),
       out: function(index) {
         return evaluations[evalIds[index]].output.result;
@@ -82,9 +83,9 @@ app.post('/evaluate', function (request, response) {
       response.statusCode = 422;
     }
     var result = evaluationResult.evaluation;
-    if (!_(result).isNumber()) {
-      result = result.toString();
-    }
+//    if (!_(result).isNumber()) {
+//      result = result.toString();
+//    }
     output.result = result;
     output.end_time = new Date().getTime();
     evalRef.update({"output": output});
@@ -93,6 +94,24 @@ app.post('/evaluate', function (request, response) {
 
   });
 });
+
+var BkTable = function(td) {
+  var t = {};
+  _(td.columnNames).each(function(cname, i) {
+    if (_.isEmpty(cname)) {
+      cname = "index";
+    }
+    var colValues;
+    if (cname === "Date") {
+      colValues = _(td.values).map(function(it) { return Date.parse(it[i]); });
+    } else {
+      colValues = _(td.values).map(function(it) { return parseFloat(it[i].trim()); });
+    }
+    colValues.name = cname;
+    t[cname] = colValues;
+  });
+  return t;
+};
 
 function processCode(code, bk) {
   var bk_out = bk._out;
