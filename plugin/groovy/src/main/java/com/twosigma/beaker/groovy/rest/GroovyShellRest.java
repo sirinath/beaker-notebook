@@ -87,8 +87,8 @@ public class GroovyShellRest {
       String response = Request.Get("https://glaring-fire-5327.firebaseIO.com/" + sessionId + "/_evaluations.json")
         .useExpectContinue()
         .version(HttpVersion.HTTP_1_1)
-        .connectTimeout(1000)
-        .socketTimeout(1000)
+        .connectTimeout(10000)
+        .socketTimeout(10000)
         .execute().returnContent().asString();
       //System.out.println("\n\nevaluations = \n" + response);
 
