@@ -1,0 +1,151 @@
+{
+    "beaker": "2",
+    "evaluators": [
+        {
+            "name": "Html",
+            "plugin": "Html",
+            "shellID": null,
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
+        },
+        {
+            "name": "Latex",
+            "plugin": "Latex",
+            "shellID": null,
+            "view": {
+                "cm": {
+                    "mode": "stex"
+                }
+            }
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "shellID": null,
+            "jsSetting2": "",
+            "jsSetting1": "",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            }
+        },
+        {
+            "name": "Groovy",
+            "plugin": "Groovy",
+            "shellID": "e3c1d65a-7168-4c05-9779-c6183040286b",
+            "view": {
+                "cm": {
+                    "mode": "groovy",
+                    "background": "#E0FFE0"
+                }
+            }
+        },
+        {
+            "name": "Node",
+            "plugin": "Node",
+            "shellID": "6dde05a7-586f-4231-9f31-36bec1abec43",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#dbecb5"
+                }
+            }
+        },
+        {
+            "name": "IPython",
+            "plugin": "IPython",
+            "shellID": "8CFCCC96F54B4FC9B0384371E646F48B",
+            "imports": "",
+            "supplementalClassPath": "",
+            "view": {
+                "cm": {
+                    "mode": "python",
+                    "background": "#EAEAFF"
+                }
+            }
+        }
+    ],
+    "cells": [
+        {
+            "id": "section001",
+            "type": "section",
+            "level": 1,
+            "title": "Hello bkSync",
+            "collapsed": false
+        },
+        {
+            "id": "code0p9B95",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": "1+1"
+            },
+            "output": {
+                "selectedType": "Hidden"
+            }
+        },
+        {
+            "id": "sectionEl725c",
+            "type": "section",
+            "title": "Long running-evaluations",
+            "level": 1,
+            "collapsed": true
+        },
+        {
+            "id": "code001",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": "sleep(5000);\nnew Date()"
+            },
+            "output": {
+                "$id": "output",
+                "begin_time": 1403535223316,
+                "eid": 1,
+                "end_time": "1403535228478",
+                "evalId": "-JQ8CyfBIOpWxMZYmGf8",
+                "selectedType": "Hidden"
+            }
+        },
+        {
+            "id": "sectionAYJeBn",
+            "type": "section",
+            "title": "set output asynchronously",
+            "level": 1,
+            "collapsed": true
+        },
+        {
+            "id": "code2uVtKX",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": "setTimeout(function() {\n  bk.updateThisOutput(\"Bye !!!\");\n}, 5000);\n\"Hello :-)\""
+            },
+            "output": {
+                "$id": "output",
+                "begin_time": 1403535245935,
+                "eid": 2,
+                "evalId": "-JQ8D3772gwXj0iUPzDX",
+                "selectedType": "Hidden",
+                "end_time": 1403535245950,
+                "last_update_time": 1403535247952
+            }
+        },
+        {
+            "id": "code301W1U",
+            "type": "code",
+            "evaluator": "Node",
+            "input": {
+                "body": "var i = 0;\nsetInterval(function() {\n  bk.updateThisOutput(\"tick \" + i++);\n}, 1000);\n\"Start\""
+            },
+            "output": {
+                "selectedType": "Hidden"
+            }
+        }
+    ]
+}

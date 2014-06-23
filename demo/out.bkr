@@ -1,0 +1,147 @@
+{
+    "beaker": "2",
+    "evaluators": [
+        {
+            "name": "Html",
+            "plugin": "Html",
+            "shellID": null,
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
+        },
+        {
+            "name": "Latex",
+            "plugin": "Latex",
+            "shellID": null,
+            "view": {
+                "cm": {
+                    "mode": "stex"
+                }
+            }
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "shellID": null,
+            "jsSetting2": "",
+            "jsSetting1": "",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            }
+        },
+        {
+            "name": "Groovy",
+            "plugin": "Groovy",
+            "shellID": "5aa91044-f069-42b7-9089-dfa06ab5e8e3",
+            "view": {
+                "cm": {
+                    "mode": "groovy",
+                    "background": "#E0FFE0"
+                }
+            }
+        },
+        {
+            "name": "Node",
+            "plugin": "Node",
+            "shellID": "cbfec9ec-7b4c-4032-9bd9-8c4876c23233",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#dbecb5"
+                }
+            }
+        },
+        {
+            "name": "IPython",
+            "plugin": "IPython",
+            "shellID": "16B84EB22EA84CC9836A332B656A9D8D",
+            "imports": "",
+            "supplementalClassPath": "",
+            "view": {
+                "cm": {
+                    "mode": "python",
+                    "background": "#EAEAFF"
+                }
+            }
+        }
+    ],
+    "cells": [
+        {
+            "id": "section001",
+            "type": "section",
+            "level": 1,
+            "title": "Hello Beaker",
+            "collapsed": false
+        },
+        {
+            "id": "code001",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": "1+1"
+            },
+            "output": {
+                "$id": "output",
+                "selectedType": "Hidden",
+                "begin_time": 1403532679727,
+                "eid": 0,
+                "evalId": "-JQ83GaakFdGnxhfqhd3",
+                "end_time": "1403532681282"
+            }
+        },
+        {
+            "id": "code2uVtKX",
+            "type": "code",
+            "evaluator": "Node",
+            "input": {
+                "body": "bk_ + 100"
+            },
+            "output": {
+                "$id": "output",
+                "selectedType": "Hidden",
+                "begin_time": 1403532682872,
+                "eid": 1,
+                "evalId": "-JQ83HL_50JV8o-7sr_j",
+                "end_time": 1403532682873
+            }
+        },
+        {
+            "id": "code301W1U",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": "bk_out[0] + bk_out[1]"
+            },
+            "output": {
+                "$id": "output",
+                "begin_time": 1403532685987,
+                "eid": 2,
+                "evalId": "-JQ83I7BlIAtd3_3ZMmq",
+                "selectedType": "Hidden",
+                "end_time": 1403532685997
+            }
+        },
+        {
+            "id": "code8lGYbU",
+            "type": "code",
+            "evaluator": "IPython",
+            "input": {
+                "body": "bk_out[2] + 8000"
+            },
+            "output": {
+                "$id": "output",
+                "begin_time": 1403532688988,
+                "eid": 3,
+                "evalId": "-JQ83IrJCnYpupgc0rz6",
+                "outputArrived": true,
+                "selectedType": "Hidden",
+                "elapsedTime": 243
+            }
+        }
+    ]
+}
