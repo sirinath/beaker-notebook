@@ -61,6 +61,7 @@
     var _edited = false;
     var __evaluations = null;
     var _evaluations = null;
+    var _sessionRef = null;
 
     var _notebookModel = (function() {
       var _v = {};
@@ -141,6 +142,65 @@
         _notebookModel.set(notebookModel);
         _edited = !!edited;
         _sessionId = sessionId;
+        _sessionRef = new Firebase(window.fb.ROOT_URL + _sessionId);
+        _sessionRef.update({"_notebook": JSON.parse(_notebookModel.toJson())});
+        var notebookRef = new Firebase(window.fb.ROOT_URL + _sessionId + "/_notebook");
+        notebookRef.on("value", function(snapshot){
+          console.log("notebook update", snapshot.val());
+
+          var updatedNotebook = snapshot.val();
+          var newCells = updatedNotebook.cells;
+          var oldCells = _notebookModel.get().cells;
+          var changed = false;
+          if (newCells.length != oldCells.length) {
+            _notebookModel.set(updatedNotebook);
+            changed = true;
+          } else {
+            for (var i = 0; i < newCells.length; ++i) {
+              var newCell = newCells[i];
+              var oldCell = oldCells[i];
+              console.log("new", newCell, "old", oldCell);
+              if (newCell.type !== oldCell.type) {
+                oldCells[i] = newCell;
+                changed = true;
+              } else if (newCell.type === "code"){
+                if (newCell.input.body !== oldCell.input.body) {
+                  oldCell.input.body = newCell.input.body;
+                  changed = true;
+                }
+                if (!_.isEmpty(newCell.output.evalId) && newCell.output.evalId != oldCell.output.evalId) {
+                  var out = new Firebase(window.fb.ROOT_URL + sessionId + "/_evaluations/" + newCell.output.evalId + "/output");
+                  oldCell.output = $firebase(out);
+                  changed = true;
+                } else if (JSON.stringify(newCell.output.result) !== JSON.stringify(oldCell.output.result)) {
+                  oldCell.result = newCell.result;
+                  changed = true;
+                }
+              } else if (newCell.type === "section") {
+                if (newCell.title !== oldCell.title) {
+                  oldCell.title = newCell.title;
+                  changed = true;
+                }
+              }
+            }
+          }
+          if (changed) {
+            bkHelper.refreshRootScope();
+          }
+
+//          _(updatedNotebook.cells).each(function(cell) {
+//            if (cell.type === "code") {
+//              var evalId = cell.output.evalId;
+//              if (!_.isEmpty(evalId)) {
+//                var out = new Firebase(window.fb.ROOT_URL + sessionId + "/_evaluations/" + evalId + "/output");
+//                cell.output = $firebase(out);
+//                console.log(cell.output);
+//              }
+//            }
+//          });
+
+          //_notebookModel.set(updatedNotebook);
+        });
 
         __evaluations = new Firebase(window.fb.ROOT_URL + _sessionId + "/_evaluations");
         _evaluations = $firebase(__evaluations);
@@ -217,6 +277,10 @@
       // but still expose it here
       setNotebookModelEdited: function(edited) {
         _edited = edited;
+        if (edited) {
+          console.log("Updating firebase", _notebookModel.get());
+          _sessionRef.update({"_notebook": JSON.parse(_notebookModel.toJson())});
+        }
       },
       isNotebookModelEdited: function() {
         return _edited;
@@ -231,7 +295,7 @@
           } else {
             _notebookModel.get().locked = undefined;
           }
-          _edited = true;
+          this.setNotebookModelEdited(true);
         }
       },
       getNotebookCellOp: function() {

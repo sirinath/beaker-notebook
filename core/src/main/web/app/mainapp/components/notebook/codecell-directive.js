@@ -255,6 +255,7 @@
             }
           }
         };
+        console.log("new CM");
         scope.cm = CodeMirror.fromTextArea(element.find("textarea")[0], {
           lineNumbers: true,
           matchBrackets: true,

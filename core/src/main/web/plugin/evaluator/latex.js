@@ -44,7 +44,7 @@ define(function(require, exports, module) {
       settings.view.cm = {};
     }
     settings.view.cm.mode = Latex.cmMode;
-    settings.view.cm.background = Latex.background;
+    //settings.view.cm.background = Latex.background;
     this.settings = settings;
   };
   Latex0.prototype = Latex;

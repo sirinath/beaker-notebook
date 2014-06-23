@@ -80,6 +80,8 @@
           },
           attachCell: function(newCell) {
             notebookCellOp.insertAfter($scope.cellmodel.id, newCell);
+            bkSessionManager.setNotebookModelEdited(true);
+            console.log("edited !!!!!!!!");
           }
         };
 
