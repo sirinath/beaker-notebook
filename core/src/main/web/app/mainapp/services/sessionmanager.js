@@ -152,11 +152,12 @@
           var newCells = updatedNotebook.cells;
           var oldCells = _notebookModel.get().cells;
           var changed = false;
-          if (newCells.length != oldCells.length) {
-            _notebookModel.set(updatedNotebook);
-            changed = true;
-          } else {
-            for (var i = 0; i < newCells.length; ++i) {
+//          if (newCells.length != oldCells.length) {
+//            _notebookModel.set(updatedNotebook);
+//            changed = true;
+//          } else {
+          var lastCell = null;
+            for (var i = 0; i < oldCells.length; ++i) {
               var newCell = newCells[i];
               var oldCell = oldCells[i];
               console.log("new", newCell, "old", oldCell);
@@ -168,13 +169,15 @@
                   oldCell.input.body = newCell.input.body;
                   changed = true;
                 }
-                if (!_.isEmpty(newCell.output.evalId) && newCell.output.evalId != oldCell.output.evalId) {
-                  var out = new Firebase(window.fb.ROOT_URL + sessionId + "/_evaluations/" + newCell.output.evalId + "/output");
-                  oldCell.output = $firebase(out);
-                  changed = true;
-                } else if (JSON.stringify(newCell.output.result) !== JSON.stringify(oldCell.output.result)) {
-                  oldCell.result = newCell.result;
-                  changed = true;
+                if (newCell.output) {
+                  if (!_.isEmpty(newCell.output.evalId) && newCell.output.evalId != oldCell.output.evalId) {
+                    var out = new Firebase(window.fb.ROOT_URL + sessionId + "/_evaluations/" + newCell.output.evalId + "/output");
+                    oldCell.output = $firebase(out);
+                    changed = true;
+                  } else if (JSON.stringify(newCell.output.result) !== JSON.stringify(oldCell.output.result)) {
+                    oldCell.result = newCell.result;
+                    changed = true;
+                  }
                 }
               } else if (newCell.type === "section") {
                 if (newCell.title !== oldCell.title) {
@@ -182,8 +185,15 @@
                   changed = true;
                 }
               }
+              lastCell = oldCells[i];
             }
-          }
+            for (;i < newCells.length; ++i) {
+              if (newCells[i].type === "code" && !newCells[i].output) {
+                newCells[i].output = {};
+              }
+              bkNotebookCellModelManager.insertAfter(lastCell.id, newCells[i]);
+            }
+          //}
           if (changed) {
             bkHelper.refreshRootScope();
           }
