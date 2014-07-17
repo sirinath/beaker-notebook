@@ -9,12 +9,13 @@ root: "../"
 </h1>
 
 <div class="alert alert-warning">
-    Be sure to get the prerequisites listed on the <a href="../getting-started.html">getting started page</a>.
+    Be sure to follow the instructions listed on the <a href="../getting-started.html">getting started page</a>.
 </div>
 
-Mac: [0.52.4](https://github.com/twosigma/beaker-notebook/releases/download/v0.52.4-beta/beaker-notebook-v0.52.4-beta-mac.zip)
+Mac: [0.55](https://s3.amazonaws.com/beaker-distributions/beaker-notebook-v0.55-0-gee418f9-mac.dmg)
 
-Windows: [0.52.4](https://github.com/twosigma/beaker-notebook/releases/download/v0.52.4-beta-windows/beaker-notebook-v0.52.4-beta-windows.zip)
+Windows: [0.55](http://d299yghl10frh5.cloudfront.net/beaker-notebook-v0.55-0-gef764d9-windows.zip)
 
-Linux: [0.52.4](https://github.com/twosigma/beaker-notebook/releases/download/v0.52.4-beta/beaker-notebook-v0.52.4-beta-ubuntu.zip)
+Linux: [0.55](http://d299yghl10frh5.cloudfront.net/beaker-notebook-v0.55-0-gef764d9-ubuntu.zip)
 
+See the [Releases](/releases.html) page for a list of what has changed since the last release.
