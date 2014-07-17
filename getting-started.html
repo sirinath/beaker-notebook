@@ -9,9 +9,7 @@ title: Getting started
     })
 </script>
 
-<div class="row">    
-
-
+<div class="row">
 
     <div class="col-sm-9">
 
@@ -25,78 +23,115 @@ title: Getting started
 
         </ul>
 
+        <h3>Current Version</h3>
+                
+        <p>Beaker is currently
+        at <a href="{{page.root}}releases.html">v0.55</a>.  This is a
+        beta release and is not yet production quality. We find it
+        useful and we hope you do too, but there are bugs and the user
+        interface and APIs are going to change. We love to improve it
+        and we look forward to hearing your feedback.
+        </p>
+
         <!-- Tab panes -->
         <div class="tab-content">
             <div class="tab-pane active" id="mac">
-                <h3>Current Version</h3>
-                
-                <p>Beaker is currently at 0.52.4-beta.  This is an early beta release and is not yet production quality. We find it useful and we hope you do too, but there are bugs and the user interface and APIs are going to change. We love to improve it and we look forward to hearing your feedback.
-                </p>
-                
-                <h3>Prerequisites</h3>
 
-                {% include prereq-mac.html %}
+                <h3>Download and Install Beaker</h3>
 
-                <h3>Download Beaker</h3>
-
-                <p>You'll receive a download link when you confirm your email.</p>
+                <p>You'll receive a download link when you confirm
+                your email.</p>
 
                 {% include mailchimp.html %}
 
                 <h3>Language support</h3>
 
-                {% include languages-mac.html %}                
+                {% include languages-mac.html %}
 
+                <hr />
+                <h1 id="sec2">Using Beaker</h1>
+                <p>
+		  The first time you run Beaker, control-click on it
+                  and select "open" from the menu, then click through
+                  the warning about being from an unknown developer.
+                  Subsequently you can just double click like any
+                  application.
+		</p>
+		<p>
+                  It will run the server and open your web browser
+                  with a connection to it.  When you exit the native
+                  application, the server quits too.  If you need to
+                  debug a problem, you can find the logs with the
+                  Console app.
+                </p>
             </div>
 
             <div class="tab-pane" id="windows">
-                <h3>Prerequisites</h3>
 
-                {% include prereq-win.html %}
+                <h3>Download and Install Beaker</h3>
 
-                <h3>Download Beaker</h3>
-
-                <p>You'll receive a download link when you confirm your email.</p>
+                <p>You'll receive a download link when you confirm
+                your email.  Download the zip file, unzip and it is
+                ready to run.</p>
 
                 {% include mailchimp.html %}
 
                 <h3>Language support</h3>
 
-                {% include languages-win.html %}     
+                {% include languages-win.html %}
+
+                <hr />
+                <h1 id="sec2">Using Beaker</h1>
+                <p>
+                  After installation, just double
+                  click <strong>beaker.command.bat</strong>.  It will
+                  open a terminal where the server runs, and a web
+                  browser with a connection to it.  When you are done,
+                  kill the server by pressing Control-C in the
+                  terminal.
+                </p>
 
             </div>
 
-
             <div class="tab-pane" id="linux">
-                <p>This is been tested on Ubuntu 12.04 LTS and 14.04 LTS. We expect it will work on other versions of Ubuntu, and should be translatable to other distros.</p>
+
+                <p>This is been tested on Ubuntu 12.04 LTS and 14.04
+                LTS. We expect it will work on other versions of
+                Ubuntu, and should be translatable to other
+                distros.</p>
+
                 <h3>Prerequisites</h3>
 
                 {% include prereq-linux.html %}
 
                 <h3>Download Beaker</h3>
 
-                <p>You'll receive a download link when you confirm your email.</p>
+                <p>You'll receive a download link when you confirm
+                your email.  Download the zip file for Ubuntu, unzip
+                and it is ready to run.  You can delete the zip
+                file.</p>
 
                 {% include mailchimp.html %}
 
                 <h3>Language support</h3>
 
-                {% include languages-linux.html %}   
+                {% include languages-linux.html %}
+
+                <hr />
+                <h1 id="sec2">Using Beaker</h1>
+                <p>
+                  After installation, open a terminal, cd into the distribution, and run <strong>./beaker.command</strong>.
+                </p>
+
             </div>
 
         </div>
 
-
-        <hr />
-        <h1 id="sec2">Using Beaker</h1>
-        <p>
-            After installation, just double click <strong>beaker.command</strong> (in Linux, you may need to call ./beaker.command from a terminal)
-        </p>     
         <p>
             Start by checking out the <strong>tutorial notebook</strong>. Find it under the 'Help' menu at the top of the page.
         </p>
         <img alt="Screenshot of the Beaker help menu" src="images/screenshots/tutorial.png" class="img-responsive">
-    </div>      
+    </div>
 
 
-</div>      
+</div>

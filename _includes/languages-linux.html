@@ -1,22 +1,88 @@
-<h5>Python</h5>
-<p>Our Python plugin requires a version of IPython >= 1.0. Install with:</p>
-<code>sudo apt-get install ipython-notebook </code><br /><br />
+<div class="row">
+  <div class="col-sm-1">
+    <strong>Python</strong>
+  </div>
 
-<p>Check your ipython version with <code>ipython --version</code> if it's below 1.0, run the following: </p>
+  <div class="col-sm-11">
+        First install zmq3:<br />
+        <code>sudo add-apt-repository --yes ppa:chris-lea/zeromq</code><br />
+        <code>sudo apt-get update</code><br />
+        <code>sudo apt-get install -y libzmq3-dbg libzmq3-dev libzmq3</code><br />
+        <br />
+        Then IPython proper:<br />
+        <code>sudo apt-get install -y python-pip python-dev</code><br />
+        <code>sudo pip install ipython jinja2 tornado</code><br />
+        <code>sudo pip install pyzmq</code><br />
+        <br/>
+        And some useful libraries:<br/>
+        <code>sudo apt-get install -y python-matplotlib python-scipy python-pandas</code><br />
+        <br />
+        <p>If you already had IPython, check your version
+        with <code>ipython --version</code> if it's below 1.0, run the
+        following: </p>
 
-<code>sudo apt-get install python-pip </code><br />
-<code>sudo pip install --upgrade ipython[all] jinja2 tornado</code><br />
+        <code>sudo apt-get install python-pip </code><br />
+        <code>sudo pip install --upgrade ipython[all] jinja2 tornado</code><br />
 
-<h5>R</h5>
-<p>Run this in your terminal:</p>
-<p>
-    <code>sudo apt-get install r-base</code><br />
-</p>
+  </div>
+</div>
 
-<p>Open R and run this:</p>
-<code>install.packages('Rserve')</code>
-<br />
-<code>install.packages("ggplot2")</code>
+<div class="row">
+  <div class="col-sm-1">
+    <strong>R</strong>
+  </div>
+  <div class="col-sm-11">
 
-<h5>Julia</h5>
-<p>Requires <a href="https://github.com/JuliaLang/IJulia.jl">IJulia</a>     
+    <code>sudo add-apt-repository --yes ppa:marutter/rrutter</code><br/>
+    <code>sudo apt-get update</code><br/>
+    <code>sudo apt-get install -y r-base r-base-dev</code><br/>
+    <code>sudo Rscript -e "install.packages('Rserve',,'http://cran.us.r-project.org')"</code><br/>
+    <code>sudo Rscript -e "install.packages('ggplot2',,'http://cran.us.r-project.org')"</code><br/>
+        
+  </div>
+</div>     
+
+<div class="row">
+    <div class="col-sm-1">
+        <strong>Julia</strong>
+    </div>
+    <div class="col-sm-10">
+      <code>sudo add-apt-repository --yes ppa:staticfloat/juliareleases</code>
+      <code>sudo add-apt-repository --yes ppa:staticfloat/julia-deps</code>
+      <code>sudo apt-get update</code>
+      <code>sudo apt-get install -y julia</code>
+      <code>julia --eval 'Pkg.add("IJulia")'</code>
+      <code>julia --eval 'Pkg.add("Gadfly")'</code>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-1">
+        <strong>Ruby</strong>
+    </div>
+    <div class="col-sm-10">
+      First install zmq3, as per Python instructions above. Then:<br/>
+      <code>sudo apt-get install -y ruby1.9.1 ruby1.9.1-dev</code><br/>
+      <code>sudo gem install iruby</code><br/>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-1">
+        <strong>Node</strong>
+    </div>
+    <div class="col-sm-10">
+      <code>sudo add-apt-repository --yes ppa:chris-lea/node.js</code><br/>
+      <code>sudo apt-get update</code><br/>
+      <code>sudo apt-get install -y nodejs</code><br/>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-1">
+        <strong>Groovy</strong>
+    </div>
+    <div class="col-sm-10">
+      Included
+    </div>
+</div>

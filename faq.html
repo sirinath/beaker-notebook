@@ -16,31 +16,66 @@ title: FAQ
 
                 <h3>Installing and launching Beaker</h3>
 
-                <p><strong>Unsupported major.minor version</strong></p>
-                <p>If you see an error like "java.lang.UnsupportedClassVersionError: : Unsupported major.minor version 51.0", it means Java 7 can't be found. Please install <a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html">JDK 7</a></p>
-
                 <p><strong>Can I change the heap size for Groovy?</strong></p>
-                <p>Yes. To customize the heap size, launch Beaker like this:</p>                      
-                <p><code>./beaker.command  --plugin-option Groovy:-Xmx8g</code></p>
+                <p>Yes. To customize the heap size, launch Beaker like this:</p>
+                <p><code>beaker.command  --plugin-option Groovy:-Xmx8g</code></p>
+
+                <p><strong>Can I make the server accessible across the net?</strong></p>
+                <p>Yes.  Start it like this:</p>
+                <p><code>beaker.command --public-server</code></p>
+                <p>The server will generate a password for you, and
+                print it on the console.  Connect to the printed URL
+                (note that it will be HTTPS, meaning encryption is
+                used to prevent snooping) and enter the password.</p>
+
+                <p><strong>How do I give command-line options on the Mac?</strong></p>
+                <p>Using the terminal, the contents of the app are
+                visible.  Assuming you have it installed in the normal
+                location you can run it like this:</p>
+                <p><code>/Applications/Beaker.app/Contents/Resources/dist/beaker.command --help</code></p>
 
                 <h3>General</h3>
 
                 <p><strong>Can I customize my default notebook?</strong></p>
-                <p>Yes, create a notebook you like and save it to ~/.beaker/v1/config/default.bkr. This will be loaded whenever you click 'new notebook.'</p>                      
+                <p>Yes, create a notebook you like and save it to
+                ~/.beaker/v1/config/default.bkr. This will be loaded
+                whenever you click 'new notebook.'</p>
+
+                <p><strong>What other customization or init files are there?</strong></p>
+                <p>~/.beaker/v1/config/beaker.pref.json is read at
+                startup and can modify the UI in many ways.  See
+                <a href=https://github.com/twosigma/beaker-notebook/wiki/Configuration-and-Preference>its
+                documentation</a>.</p>
 
                 <p><strong>Why are you asking for my email address?</strong></p>
-                <p>The primary purpose of the beta is to get user feedback on what needs to be improved before our full launch. We may periodically ask you to complete short questionnaires about your experience. We may also send up notifications when significant new features have been added.</p>
+                <p>The primary purpose of the beta is to get user
+                feedback on what needs to be improved before our full
+                launch. We may ask you to complete a short
+                questionnaire about your experience. We may also
+                notify you when we make a major new release, or in
+                case of an important security update.</p>
 
                 <p>You can unsubscribe from our email list at any time and continue using Beaker.</p>
 
-                <p><strong>How does Beaker relate to IPython Notebook</strong></p>
-                <p>If you only work in Python, you can consider Beaker an alternative UI to IPython. Our Python plugin runs an IPython kernel on the backend, so all of your code will work the way you expect it to. We do have some UI features that we think are compelling, so check it out!</p>
+                <p><strong>How does Beaker relate to the IPython Notebook?</strong></p>
+                <p>If you only work in Python, you can consider Beaker
+                an alternative UI to IPython. Our Python plugin runs
+                an IPython kernel on the backend, so all of your code
+                should work the way you expect it to. We have some UI
+                features that we find compelling, so check it out!</p>
 
-                <p>If you work with multiple languages, or one language that isn't Python, we think you'll find Beaker much more pleasant. Beaker's core was built to be language agnostic, so all languages are treated equally within Beaker.</p>
+                <p>If you work with multiple languages, or one
+                language that isn't Python, we think you'll find
+                Beaker much more pleasant. Beaker's core was built to
+                be language agnostic, so all languages are treated
+                equally within Beaker.</p>
 
-                <p>Since several of our plugins (Python, Julia, Ruby) are based on IPython kernels, we've been able to spend our time working on Beaker's UI and our other plugins. Many thanks to IPython for their great kernel architecture!</p>
+                <p>Since several of our plugins (Python, Julia, Ruby)
+                are based on IPython kernels, we've been able to spend
+                our time working on Beaker's UI and our other
+                plugins. Many thanks to IPython for their great kernel
+                architecture!</p>
             </div>
         </div>
     </div>          
 </div>      
-
