@@ -1,1 +1,2 @@
 exclude: ['psd']
+markdown: kramdown
