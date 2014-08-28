@@ -37,10 +37,9 @@
     var CELL_TYPE = "notebook";
     return {
       restrict: 'E',
-      template: JST["mainapp/components/notebook/notebook"](),
+      template: BK_NOTEBOOK["notebook"](),
       scope: {
-        setBkNotebook: "&",
-        isLoading: "="
+        setBkNotebook: "&"
       },
       controller: function ($scope) {
         var notebookCellOp = bkSessionManager.getNotebookCellOp();

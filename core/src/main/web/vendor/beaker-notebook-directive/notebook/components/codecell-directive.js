@@ -32,7 +32,7 @@
     var CELL_TYPE = "code";
     return {
       restrict: 'E',
-      template: JST["mainapp/components/notebook/codecell"](),
+      template: BK_NOTEBOOK["codecell"](),
       scope: { cellmodel: "=", cellmenu: "="},
       controller: function($scope) {
         $scope.cellview = {

@@ -21,7 +21,7 @@
   module.directive('bkTextCell', function(bkSessionManager) {
     return {
       restrict: 'E',
-      template: JST["mainapp/components/notebook/textcell"](),
+      template: BK_NOTEBOOK["textcell"](),
       controller: function($scope) {
         $scope.getFullIndex = function() {
           return $scope.$parent.$parent.$parent.getFullIndex() + "." + $scope.$parent.index;

@@ -21,7 +21,7 @@
   module.directive('bkMarkdownCell', ['bkSessionManager', 'bkHelper', function(bkSessionManager, bkHelper) {
     return {
       restrict: 'E',
-      template: JST["mainapp/components/notebook/markdowncell"](),
+      template: BK_NOTEBOOK["markdowncell"](),
       controller: function($scope) {
         $scope.getFullIndex = function() {
           return $scope.$parent.$parent.$parent.getFullIndex() + "." + $scope.$parent.index;

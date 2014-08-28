@@ -32,7 +32,7 @@
   module.directive('bkCell', function(bkUtils, bkSessionManager, bkCoreManager) {
     return {
       restrict: 'E',
-      template: JST["mainapp/components/notebook/cell"](),
+      template: BK_NOTEBOOK["cell"](),
       scope: {
         cellmodel: "=",
         index: "="
@@ -82,9 +82,6 @@
           },
           attachCell: function(newCell) {
             notebookCellOp.insertAfter($scope.cellmodel.id, newCell);
-          },
-          prevCell: function() {
-            return $scope.cellmodel;
           }
         };
 

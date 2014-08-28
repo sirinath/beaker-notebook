@@ -27,7 +27,7 @@
       bkUtils, bkOutputDisplayFactory, bkEvaluatorManager) {
     return {
       restrict: "E",
-      template: JST["mainapp/components/notebook/codecelloutput"](),
+      template: BK_NOTEBOOK["codecelloutput"](),
       scope: {
         model: "=",
         evaluatorId: "@"

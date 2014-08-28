@@ -27,7 +27,7 @@
     var CELL_TYPE = "section";
     return {
       restrict: 'E',
-      template: JST["mainapp/components/notebook/sectioncell"](),
+      template: BK_NOTEBOOK["sectioncell"](),
       controller: function($scope) {
         var notebookCellOp = bkSessionManager.getNotebookCellOp();
         $scope.toggleShowChildren = function() {
@@ -174,9 +174,6 @@
           },
           attachCell: function(newCell) {
             notebookCellOp.insertAfter($scope.cellmodel.id, newCell);
-          },
-          prevCell: function() {
-            return $scope.cellmodel;
           }
         };
       },
