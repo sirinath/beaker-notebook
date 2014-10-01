@@ -45,6 +45,8 @@ http {
       alias %(static_dir)s/static/;
     }
 
+    rewrite ^/beaker/[a-z0-9]+/(.*)$ /$1 last;
+
     # in google chrome iframe do not inherit base tag and epiceditor uses iframes
     location = /beaker/vendor/epiceditor/themes/base/epiceditor.css {
         rewrite /beaker/vendor/epiceditor/themes/base/epiceditor.css /%(urlhash)s/beaker/vendor/epiceditor/themes/base/epiceditor.css;
