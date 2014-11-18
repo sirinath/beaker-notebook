@@ -144,7 +144,6 @@
         redoAction = undefined;
         redoAction2 = undefined;
       }
-      bkBunsenHelper.resizeIFrame();
     };
     return {
       _getCellMap: function() {
