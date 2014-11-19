@@ -53,7 +53,9 @@
         {
             "id": "textueitad",
             "type": "text",
-            "body": "The R Project for Statistical Computing publishes GNU R. &nbsp;Follow the instructions on BeakerNotebook.com for how to install R so Beaker can use it.",
+            "body": [
+                "The R Project for Statistical Computing publishes GNU R. &nbsp;Follow the instructions on BeakerNotebook.com for how to install R so Beaker can use it."
+            ],
             "evaluatorReader": false
         },
         {
@@ -61,11 +63,15 @@
             "type": "code",
             "evaluator": "R",
             "input": {
-                "body": "#scalar\na = 1"
+                "body": [
+                    "#scalar",
+                    "a = 1"
+                ]
             },
             "output": {
-                "selectedType": "Hidden",
-                "elapsedTime": 80
+                "selectedType": "BeakerDisplay",
+                "elapsedTime": 77,
+                "state": {}
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -75,11 +81,15 @@
             "type": "code",
             "evaluator": "R",
             "input": {
-                "body": "#vector\nb = c(1,2,3)"
+                "body": [
+                    "#vector",
+                    "b = c(1,2,3)"
+                ]
             },
             "output": {
-                "selectedType": "Hidden",
-                "elapsedTime": 51
+                "selectedType": "BeakerDisplay",
+                "elapsedTime": 49,
+                "state": {}
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -89,25 +99,52 @@
             "type": "code",
             "evaluator": "R",
             "input": {
-                "body": "#calling functions\nmean(x=b) #with arg name\nmean(b) #without arg name"
+                "body": [
+                    "#calling functions",
+                    "mean(x=b) #with arg name",
+                    "mean(b) #without arg name"
+                ]
             },
             "output": {
-                "selectedType": "Hidden",
-                "elapsedTime": 53
+                "selectedType": "Text",
+                "elapsedTime": 67,
+                "state": {}
             },
             "evaluatorReader": true,
             "lineCount": 3
+        },
+        {
+            "id": "codeSBmnVP",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": [
+                    "# defining functions",
+                    "dbl <- function(x) { 2*x }"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Text",
+                "elapsedTime": 43
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
         },
         {
             "id": "codeqwiFQG",
             "type": "code",
             "evaluator": "R",
             "input": {
-                "body": "#random data\nrnorm(10)"
+                "body": [
+                    "#random data",
+                    "rnorm(10)"
+                ]
             },
             "output": {
-                "selectedType": "Hidden",
-                "elapsedTime": 67
+                "selectedType": "Text",
+                "elapsedTime": 68,
+                "state": {}
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -117,11 +154,15 @@
             "type": "code",
             "evaluator": "R",
             "input": {
-                "body": "#help\nhelp(mean)"
+                "body": [
+                    "#help",
+                    "help(mean)"
+                ]
             },
             "output": {
-                "selectedType": "Hidden",
-                "elapsedTime": 187
+                "selectedType": "Text",
+                "elapsedTime": 121,
+                "state": {}
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -131,11 +172,15 @@
             "type": "code",
             "evaluator": "R",
             "input": {
-                "body": "#example\nexample(mean)"
+                "body": [
+                    "#example",
+                    "example(mean)"
+                ]
             },
             "output": {
-                "selectedType": "Hidden",
-                "elapsedTime": 440
+                "selectedType": "BeakerDisplay",
+                "elapsedTime": 86,
+                "state": {}
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -145,11 +190,15 @@
             "type": "code",
             "evaluator": "R",
             "input": {
-                "body": "#list defined variables\nls()"
+                "body": [
+                    "#list defined variables",
+                    "ls()"
+                ]
             },
             "output": {
                 "selectedType": "Hidden",
-                "elapsedTime": 67
+                "elapsedTime": 67,
+                "state": {}
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -159,11 +208,18 @@
             "type": "code",
             "evaluator": "R",
             "input": {
-                "body": "#using vectors\nc = c(1,2,3,4)\nc[2] #access, 1-based indexing\nc[5] = 5 #assign\nc"
+                "body": [
+                    "#using vectors",
+                    "c = c(1,2,3,4)",
+                    "c[2] #access, 1-based indexing",
+                    "c[5] = 5 #assign",
+                    "c"
+                ]
             },
             "output": {
                 "selectedType": "Hidden",
-                "elapsedTime": 56
+                "elapsedTime": 56,
+                "state": {}
             },
             "evaluatorReader": true,
             "lineCount": 5
@@ -173,11 +229,15 @@
             "type": "code",
             "evaluator": "R",
             "input": {
-                "body": "#matrices\nd = matrix(data=c(1,2,3,4,5,6), ncol=3)"
+                "body": [
+                    "#matrices",
+                    "d = matrix(data=c(1,2,3,4,5,6), ncol=3)"
+                ]
             },
             "output": {
                 "selectedType": "Hidden",
-                "elapsedTime": 91
+                "elapsedTime": 91,
+                "state": {}
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -187,11 +247,16 @@
             "type": "code",
             "evaluator": "R",
             "input": {
-                "body": "#Data Frames\n#Beaker will display this as a sortable table\ndata.frame(a = c(1,2,3), b = c(4,5,6), c=c(7,8,9))"
+                "body": [
+                    "#Data Frames",
+                    "#Beaker will display this as a sortable table",
+                    "data.frame(a = c(1,2,3), b = c(4,5,6), c=c(7,8,9))"
+                ]
             },
             "output": {
                 "selectedType": "Hidden",
-                "elapsedTime": 194
+                "elapsedTime": 194,
+                "state": {}
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -201,11 +266,15 @@
             "type": "code",
             "evaluator": "R",
             "input": {
-                "body": "#line plot\nplot(rnorm(100), type='l')"
+                "body": [
+                    "#line plot",
+                    "plot(rnorm(100), type='l')"
+                ]
             },
             "output": {
-                "selectedType": "Hidden",
-                "elapsedTime": 105
+                "selectedType": "Html",
+                "elapsedTime": 73,
+                "state": {}
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -215,11 +284,15 @@
             "type": "code",
             "evaluator": "R",
             "input": {
-                "body": "#scatterplot\nplot(rnorm(100))"
+                "body": [
+                    "#scatterplot",
+                    "plot(rnorm(100))"
+                ]
             },
             "output": {
-                "selectedType": "Hidden",
-                "elapsedTime": 94
+                "selectedType": "Html",
+                "elapsedTime": 177,
+                "state": {}
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -229,25 +302,57 @@
             "type": "code",
             "evaluator": "R",
             "input": {
-                "body": "#histogram\nhist(rnorm(100))"
+                "body": [
+                    "#histogram",
+                    "hist(rnorm(100))"
+                ]
             },
             "output": {
-                "selectedType": "Hidden",
-                "elapsedTime": 120
+                "selectedType": "Html",
+                "elapsedTime": 69,
+                "state": {}
             },
             "evaluatorReader": true,
             "lineCount": 2
+        },
+        {
+            "id": "codeNE0SsQ",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": [
+                    "# Set the options for plotting like this.",
+                    "",
+                    "svg_options(width=10, height=3)",
+                    "",
+                    "# Note however that this function must be called from a different cell from the one that actually does the plotting.",
+                    "# We plan to improve this, see https://github.com/twosigma/beaker-notebook/issues/731"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "BeakerDisplay",
+                "elapsedTime": 60
+            },
+            "evaluatorReader": true,
+            "lineCount": 6
         },
         {
             "id": "codeIGQOy3",
             "type": "code",
             "evaluator": "R",
             "input": {
-                "body": "#fancy charts with ggplot2\nlibrary(ggplot2)\ncde <- geom_histogram(position=\"fill\", binwidth = 500)\nggplot(diamonds, aes(x=price, fill=clarity)) + cde"
+                "body": [
+                    "#fancy charts with ggplot2",
+                    "library(ggplot2)",
+                    "cde <- geom_histogram(position=\"fill\", binwidth = 500)",
+                    "ggplot(diamonds, aes(x=price, fill=clarity)) + cde"
+                ]
             },
             "output": {
-                "selectedType": "Hidden",
-                "elapsedTime": 2108
+                "selectedType": "Html",
+                "elapsedTime": 397,
+                "state": {}
             },
             "evaluatorReader": true,
             "lineCount": 4

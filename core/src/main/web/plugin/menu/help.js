@@ -22,6 +22,7 @@ define(function(require, exports, module) {
   var menuItems = [
     {
       name: "Tutorial",
+      sortorder: 100,
       action: function() {
         bkHelper.openNotebook("config/tutorial.bkr", undefined, true);
       },
@@ -29,6 +30,7 @@ define(function(require, exports, module) {
     },
     {
       name: "About Beaker",
+      sortorder: 120,
       action: function() {
         bkHelper.showModalDialog(undefined, "app/template/about.html");
       },
@@ -36,6 +38,7 @@ define(function(require, exports, module) {
     },
     {
       name: "Keyboard shortcuts",
+      sortorder: 110,
       action: function() {
         window.open("./keyboardShortcuts.html");
       },
@@ -43,17 +46,11 @@ define(function(require, exports, module) {
     },
     {
       name: "Report a bug or feature request",
+      sortorder: 130,
       action: function() {
         window.open("https://github.com/twosigma/beaker-notebook/issues/new");
       },
       tooltip: "Log an issue in GitHub"
-    },
-    {
-      name: "Privacy policy",
-      action: function() {
-        window.open("http://beakernotebook.com/privacy");
-      },
-      tooltip: "Privacy policy on beakernotebook.com"
     }
   ];
   var menuItemPromise = bkHelper.newPromise({

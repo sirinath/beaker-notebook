@@ -16,5 +16,10 @@
 include 'shared', 'plugin:jvm', 'plugin:ipython', 'plugin:node'
 project(':shared').projectDir = file("../shared")
 project(':plugin:jvm').projectDir = file("./jvm")
+// project(':plugin:groovy').projectDir = file("./groovy")
+// project(':plugin:javash').projectDir = file("./javash")
 project(':plugin:ipython').projectDir = file("./ipython")
+// project(':plugin:python3').projectDir = file("./python3")
+// project(':plugin:iruby').projectDir = file("./iruby")
+// project(':plugin:julia').projectDir = file("./julia")
 project(':plugin:node').projectDir = file("./node")

@@ -22,7 +22,42 @@ define(function(require, exports, module) {
   'use strict';
   var menuItems = [
     {
+      name: "Start Page",
+      sortorder: 100,
+      action: function() {
+        bkHelper.gotoControlPanel();
+      }
+    },
+    {
+      name: 'Show Hierarchy',
+      sortorder: 110,
+      isChecked: function() {
+        var notebookViewModel = bkHelper.getBkNotebookViewModel();
+        return notebookViewModel.isHierarchyEnabled();
+      },
+      action: function() {
+        var notebookViewModel = bkHelper.getBkNotebookViewModel();
+        notebookViewModel.toggleHierarchyEnabled();
+      }
+    },
+    {
+      name: 'Advanced Mode',
+      sortorder: 120,
+      isChecked: function() {
+        var notebookViewModel = bkHelper.getBkNotebookViewModel();
+        return notebookViewModel.isAdvancedMode();
+      },
+      action: function() {
+        var notebookViewModel = bkHelper.getBkNotebookViewModel();
+        notebookViewModel.toggleAdvancedMode();
+        bkHelper.httpPost("../beaker/rest/util/setUseAdvancedMode", {
+          advancedmode: notebookViewModel.isAdvancedMode()
+        });
+      }
+    },
+    {
       name: "Show stdout/err",
+      sortorder: 130,
       action: function() {
         bkHelper.getBkNotebookViewModel().toggleShowOutput();
       },

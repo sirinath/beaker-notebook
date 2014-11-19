@@ -30,6 +30,11 @@ public interface BeakerConfig {
    */
   public String getInstallDirectory();
   /**
+   * The Beaker file load search directories
+   * @return
+   */
+  public String [] getFileSearchDirs();
+  /**
    * where to search for plugin executables and starting scripts
    * @return
    */
@@ -169,4 +174,25 @@ public interface BeakerConfig {
    * @return
    */
   public String getBuildTime();
+  /**
+   * hash
+   * @return
+   */
+  public String getHash();
+  /**
+   * main page file name
+   * @return
+   */
+  public String getMainPageFileName();
+  /**
+   * gist server url for notebook sharing
+   * @return
+   */
+  public String getGistServerUrl();
+  /**
+   * sharing server url for shared notebook display
+   * @return
+   */
+  public String getSharingServerUrl();
+
 }

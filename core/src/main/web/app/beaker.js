@@ -89,7 +89,56 @@
         });
     return deferred.promise;
   };
+  
+  var initOutputDisplay = function()
+  {
+    var deferred = Q.defer();
+    function loadJS(url, success, failure) {
+      var e = document.createElement('script');
+      e.type = "text/javascript";
+      e.src = url;
+      if (success) {
+        e.onload = success;
+      }
+      if (failure) {
+        e.onerror = failure;
+      }
+      document.head.appendChild(e);
+    };
+    function loadList(urls, success, failure) {
+      if (urls.length == 0) {
+        if (success)
+          return success();
+        return;
+      }
+      var url = urls.shift();
+      loadJS(url, function() {
+        loadList(urls, success, failure);
+      }, failure);
+    }
 
+    
+    if (window.bkInit && window.bkInit.getOutputDisplayCssList) {
+      for ( var i = 0; i < window.bkInit.getOutputDisplayCssList.length; i++) {
+        var url = window.bkInit.getOutputDisplayCssList[i];
+        var link = document.createElement('link');
+        link.type = 'text/css';
+        link.rel = 'stylesheet';
+        link.href = url;
+        document.head.appendChild(link);
+      }
+    }
+    if (window.bkInit && window.bkInit.getOutputDisplayJsList) {
+      loadList(window.bkInit.getOutputDisplayJsList, function() {
+        deferred.resolve();
+      }, function() {
+        console.log("error loading output displays");
+      });
+    } else
+      deferred.resolve();
+    return deferred.promise;
+  }
+  
   var setupBeakerConfigAndRun = function() {
 
     var beaker = angular.module('beaker', [
@@ -101,6 +150,7 @@
       'bk.helper'
     ]);
 
+    
     // setup routing. the template is going to replace ng-view
     beaker.config(function($routeProvider) {
       var sessionRouteResolve = {};
@@ -277,9 +327,9 @@
     beaker.run(function(bkEvaluatePluginManager) {
       // for known plugins, so we can refer to the plugin with either its name or URL
       var defaultEvaluatorUrlMap = {
-        "Html": "./plugin/evaluator/html.js",
-        "Latex": "./plugin/evaluator/latex.js",
-        "JavaScript": "./plugin/evaluator/javaScript.js"
+        "Html": { url: "./plugin/evaluator/html.js",             bgColor: "#E3502B", fgColor: "#FFFFFF", borderColor: "",        shortName: "Ht" },
+        "Latex": { url: "./plugin/evaluator/latex.js",           bgColor: "#FFFFFF", fgColor: "#030303", borderColor: "#3D4444", shortName: "La" },
+        "JavaScript": { url: "./plugin/evaluator/javaScript.js", bgColor: "#EFDB52", fgColor: "#4A4A4A", borderColor: "",        shortName: "Js" }
       };
 
       _.chain(defaultEvaluatorUrlMap).each(function(value, key) {
@@ -318,7 +368,7 @@
       angular.bootstrap(document, ["beaker"]);
     });
   };
-  Q.fcall(initPlugins)
+  Q.fcall(initPlugins).then(initOutputDisplay)
       .then(setupBeakerConfigAndRun)
       .then(bootstrapBkApp)
       .catch(function (err) {

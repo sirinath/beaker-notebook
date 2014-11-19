@@ -21,6 +21,7 @@
   var module = angular.module('bk.evaluatePluginManager', ['bk.utils']);
   module.factory('bkEvaluatePluginManager', function(bkUtils) {
       var nameToUrlMap = {};
+      var nameToVisualParams = {};
       var plugins = {};
       var loadingInProgressPlugins = [];
       return {
@@ -28,13 +29,24 @@
           return nameToUrlMap;
         },
         addNameToUrlEntry: function(name, url) {
-          nameToUrlMap[name] = url;
+          if ( typeof url === 'string' ) {
+            nameToUrlMap[name] = url;
+          } else {
+            nameToUrlMap[name] = url.url;
+            delete url.url;
+            nameToVisualParams[name] = url;
+          }
+        },
+        getVisualParams: function(name) {
+            return nameToVisualParams[name];
         },
         getEvaluatorFactory: function(nameOrUrl) {
           if (plugins[nameOrUrl]) {
             var deferred = bkUtils.newDeferred();
             plugins[nameOrUrl].getEvaluatorFactory().then(function(shellCreator) {
               deferred.resolve(shellCreator);
+            }, function(err) {
+              deferred.reject(err);
             });
             return deferred.promise;
           } else {
@@ -60,8 +72,27 @@
               }
               ex.getEvaluatorFactory().then(function(shellCreator) {
                 deferred.resolve(shellCreator);
+              }, function(err) {
+                if (!_.isEmpty(ex.name)) {
+                  delete plugins[ex.name];
+                }
+                if (!_.isEmpty(name) && name !== ex.name) {
+                  delete plugins[name];
+                }
+                console.error(err);
+                if (_.isEmpty(name)) {
+                  deferred.reject("failed to load plugin: " + url);
+                } else {
+                  deferred.reject("failed to load plugin: " + name + " at " + url);
+                }
               });
             }, function(err) {
+              if (!_.isEmpty(ex.name)) {
+                delete plugins[ex.name];
+              }
+              if (!_.isEmpty(name) && name !== ex.name) {
+                delete plugins[name];
+              }
               console.error(err);
               if (_.isEmpty(name)) {
                 deferred.reject("failed to load plugin: " + url);
@@ -73,7 +104,6 @@
                 return it.url !== url;
               });
             });
-
             return deferred.promise;
           }
         },

@@ -19,6 +19,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.shared.module.util.GeneralUtils;
 import com.twosigma.beaker.core.rest.StreamGobbler;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
@@ -29,8 +30,12 @@ import java.net.InetAddress;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 /**
  * DefaultBeakerConfig
@@ -42,6 +47,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 public class DefaultBeakerConfig implements BeakerConfig {
 
   private final String installDir;
+  private final String [] searchDirs;
   private final String pluginDir;
   private final String dotDir;
   private final String nginxDir;
@@ -68,6 +74,9 @@ public class DefaultBeakerConfig implements BeakerConfig {
   private final Map<String, String[]> pluginEnvps;
   private final String version;
   private final String buildTime;
+  private final String hash;
+  private final String gist_server;
+  private final String sharing_server;
 
   private String hash(String password) {
     return DigestUtils.sha512Hex(password + getPasswordSalt());
@@ -79,6 +88,8 @@ public class DefaultBeakerConfig implements BeakerConfig {
   {
 
     this.installDir = System.getProperty("user.dir");
+    this.searchDirs = new String [1];
+    this.searchDirs[0] = this.installDir;
     this.useKerberos = pref.getUseKerberos();
     this.portBase = pref.getPortBase();
     this.reservedPortCount = 4;
@@ -92,7 +103,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
       this.nginxBinDir = ""; // assuming nginx is available in PATH
     }
     this.nginxServDir = utils.createTempDirectory(this.dotDir, "nginx");
-    this.nginxStaticDir = this.installDir + "/src/main/web/static";
+    this.nginxStaticDir = this.installDir + "/src/main/web";
     this.nginxExtraRules = "";
     this.nginxPluginRules = new HashMap<>();
 
@@ -107,14 +118,30 @@ public class DefaultBeakerConfig implements BeakerConfig {
     utils.ensureFileHasContent(preferenceFile, defaultPreferenceFile);
     this.preferenceFileUrl = preferenceFile;
 
+    String content = utils.readFile(this.preferenceFileUrl);
+    
+    JSONObject obj = (JSONObject)JSONValue.parse(content);
+    if (obj.get("gist_server") != null)
+        this.gist_server = (String)obj.get("gist_server");
+    else
+        this.gist_server = "https://api.github.com/gists";
+        
+    if (obj.get("sharing_server") != null)
+        this.sharing_server = (String)obj.get("sharing_server");
+    else
+        this.sharing_server = "http://sharing.beakernotebook.com/gist/anonymous";
+    
     final String prefDefaultNotebookUrl = pref.getDefaultNotebookUrl();
     final String mainDefaultNotebookPath = this.dotDir + "/config/default.bkr";
     final String defaultDefaultNotebookPath = this.installDir + "/config/default.bkr";
     if (prefDefaultNotebookUrl != null) {
       this.defaultNotebookUrl = prefDefaultNotebookUrl;
     } else {
-      utils.ensureFileHasContent(mainDefaultNotebookPath, defaultDefaultNotebookPath);
-      this.defaultNotebookUrl = mainDefaultNotebookPath;
+      File f = new File(mainDefaultNotebookPath);
+      if(f.exists())
+        this.defaultNotebookUrl = mainDefaultNotebookPath;
+      else
+        this.defaultNotebookUrl = defaultDefaultNotebookPath;
     }
 
     String varDir = this.dotDir + "/var";
@@ -155,11 +182,17 @@ public class DefaultBeakerConfig implements BeakerConfig {
 
     this.version = utils.readFile(this.installDir + "/config/version");
     this.buildTime = utils.readFile(this.installDir + "/config/build_time");
+    this.hash = utils.readFile(this.installDir + "/config/hash");
   }
 
   @Override
   public String getInstallDirectory() {
     return this.installDir;
+  }
+
+  @Override
+  public String [] getFileSearchDirs() {
+    return this.searchDirs;
   }
 
   @Override
@@ -315,5 +348,25 @@ public class DefaultBeakerConfig implements BeakerConfig {
   @Override
   public String getBuildTime() {
     return this.buildTime;
+  }
+
+  @Override
+  public String getHash() {
+    return this.hash;
+  }
+  
+  @Override
+  public String getMainPageFileName() {
+      return this.installDir + "/src/main/web/app/template/index_template.html";
+  }
+  
+  @Override
+  public String getGistServerUrl() {
+    return this.gist_server;
+  }
+
+  @Override
+  public String getSharingServerUrl() {
+    return this.sharing_server;      
   }
 }

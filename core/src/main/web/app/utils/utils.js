@@ -77,6 +77,8 @@
       },
       httpGet: function(url, data, headers) {
         return angularUtils.httpGet(url, data, headers);
+      fromPrettyJson: function(jString) {
+        return angularUtils.fromPrettyJson(jString);
       },
       httpPost: function(url, data) {
         return angularUtils.httpPost(url, data);
@@ -206,6 +208,10 @@
       },
       disconnect: function() {
         return cometdUtils.disconnect();
+      },
+
+      beginsWith: function(haystack, needle) {
+        return (haystack.substr(0, needle.length) === needle);
       },
 
       // wrapper around requireJS

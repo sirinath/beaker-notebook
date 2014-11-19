@@ -17,12 +17,14 @@
   "use strict";
   window.bkInit.getEvaluatorUrlMap = function() {
     return {
-      "IPython": "./plugins/eval/ipythonPlugins/ipython/ipython.js",
-      // "IRuby": "./plugins/eval/ipythonPlugins/iruby/iruby.js",
-      // "Julia": "./plugins/eval/ipythonPlugins/julia/julia.js",
-      // "Groovy": "./plugins/eval/groovy/groovy.js",
-      // "R": "./plugins/eval/r/r.js",
-      "Node": "./plugins/eval/node/node.js"
+      "IPython": { url : "./plugins/eval/ipythonPlugins/ipython/ipython.js", bgColor: "#EEBD48", fgColor: "#FFFFFF", borderColor: "", shortName: "Py" },
+//      "Python3": { url : "./plugins/eval/ipythonPlugins/python3/python3.js", bgColor: "#EEBD48", fgColor: "#FFFFFF", borderColor: "", shortName: "Py" },
+      // "IRuby": { url : "./plugins/eval/ipythonPlugins/iruby/iruby.js", bgColor: "#AF1712", fgColor: "#FFFFFF", borderColor: "", shortName: "Rb" },
+//      "Julia": { url : "./plugins/eval/ipythonPlugins/julia/julia.js", bgColor: "#6EAC5E", fgColor: "#FFFFFF", borderColor: "", shortName: "Jl" },
+//      "Groovy": { url : "./plugins/eval/groovy/groovy.js", bgColor: "#6497A9", fgColor: "#FFFFFF", borderColor: "", shortName: "Gv" },
+//      "Java": { url : "./plugins/eval/javash/javash.js", bgColor: "#EB0000", fgColor: "#FFFFFF", borderColor: "", shortName: "Jv" },
+//      "R": { url : "./plugins/eval/r/r.js", bgColor: "#8495BB", fgColor: "#FFFFFF", borderColor: "", shortName: "R" },
+      "Node": { url : "./plugins/eval/node/node.js", bgColor: "#8EC453", fgColor: "#FFFFFF", borderColor: "", shortName: "N" }
     };
   };
 })();

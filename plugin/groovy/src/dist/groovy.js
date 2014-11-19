@@ -62,6 +62,7 @@ define(function(require, exports, module) {
       cometd.addListener("/meta/connect", cb);
     }
   };
+  var GroovyCancelFunction = null;
   var Groovy = {
     pluginName: PLUGIN_NAME,
     cmMode: "groovy",
@@ -98,6 +99,19 @@ define(function(require, exports, module) {
         url: serviceBase + "/rest/groovysh/evaluate",
         data: {shellId: self.settings.shellID, code: code}
       }).done(function(ret) {
+        GroovyCancelFunction = function () {
+          $.ajax({
+            type: "POST",
+            datatype: "json",
+            url: serviceBase + "/rest/groovysh/cancelExecution",
+            data: {shellId: self.settings.shellID}
+          }).done(function (ret) {
+            console.log("done cancelExecution",ret);
+          });
+          progressObj.message = "cancelling...";
+          modelOutput.result = progressObj;
+          console.log("cancelling");
+        }
         var onUpdatableResultUpdate = function(update) {
           modelOutput.result = update;
           bkHelper.refreshRootScope();
@@ -132,7 +146,38 @@ define(function(require, exports, module) {
           cometdUtil.subscribe(ret.update_id, onEvalStatusUpdate);
         }
       });
+      deferred.promise.finally(function () {
+        GroovyCancelFunction = null;
+      });
       return deferred.promise;
+    },
+    interrupt: function() {
+      this.cancelExecution();
+    },
+    cancelExecution: function () {
+      if (GroovyCancelFunction) {
+        GroovyCancelFunction();
+      }
+    },
+    resetEnvironment: function () {
+      $.ajax({
+        type: "POST",
+        datatype: "json",
+        url: serviceBase + "/rest/groovysh/resetEnvironment",
+        data: {shellId: this.settings.shellID}
+      }).done(function (ret) {
+        console.log("done resetEnvironment",ret);
+      });
+    },
+    killAllThreads: function () {
+      $.ajax({
+        type: "POST",
+        datatype: "json",
+        url: serviceBase + "/rest/groovysh/killAllThreads",
+        data: {shellId: this.settings.shellID}
+      }).done(function (ret) {
+        console.log("done killAllThreads",ret);
+      });
     },
     autocomplete: function(code, cpos, cb) {
       var self = this;
@@ -158,16 +203,20 @@ define(function(require, exports, module) {
       bkHelper.httpPost(serviceBase + "/rest/groovysh/setShellOptions", {
         shellId: this.settings.shellID,
         classPath: this.settings.classPath,
-        imports: this.settings.imports}).success(cb);
+        imports: this.settings.imports,
+        outdir: this.settings.outdir}).success(cb);
     },
     spec: {
+      outdir:    {type: "settableString", action: "updateShell", name: "Dynamic classes directory"},
       classPath: {type: "settableString", action: "updateShell", name: "Class path (jar files, one per line)"},
-      imports: {type: "settableString", action: "updateShell", name: "Imports (classes, one per line)"}
+      imports:   {type: "settableString", action: "updateShell", name: "Imports (classes, one per line)"},
+      resetEnv:  {type: "action", action: "resetEnvironment", name: "Reset Environment" },
+      killAllThr:  {type: "action", action: "killAllThreads", name: "Kill All Threads" }
     },
     cometdUtil: cometdUtil
   };
   var defaultImports = [
-    "java.awt.Color",
+    "com.twosigma.beaker.chart.Color",
     "com.twosigma.beaker.chart.xychart.*",
     "com.twosigma.beaker.chart.xychart.plotitem.*"];
   var shellReadyDeferred = bkHelper.newDeferred();
@@ -222,6 +271,7 @@ define(function(require, exports, module) {
       shellReadyDeferred.resolve(GroovyShell);
     }).error(function() {
       console.log("failed to locate plugin service", PLUGIN_NAME, arguments);
+      shellReadyDeferred.reject("failed to locate plugin service");
     });
   };
   init();
@@ -237,7 +287,8 @@ define(function(require, exports, module) {
           return deferred.promise;
         }
       };
-    });
+    },
+    function(err) { return err; });
   };
 
   exports.name = PLUGIN_NAME;

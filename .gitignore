@@ -18,3 +18,8 @@ build.xml
 manifest.mf
 .DS_Store
 npm-debug.log
+core/src/main/web/app/templates.js
+core/config/hash
+
+core/src/main/web/index.html
+/bin/

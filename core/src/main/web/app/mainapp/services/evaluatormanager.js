@@ -30,7 +30,7 @@
       removeEvaluator: function(plugin) {
         for (var key in evaluators) {
           var e = evaluators[key];
-          if (e.pluginName == plugin) {
+          if (e.pluginName === plugin) {
             if (_.isFunction(e.exit)) {
               e.exit();
             }
@@ -39,12 +39,21 @@
         }
       },
       newEvaluator: function(evaluatorSettings) {
-        loadingInProgressEvaluators.push(evaluatorSettings);
+	    if(loadingInProgressEvaluators.indexOf(evaluatorSettings)>0)
+	      return; // already loading...
+	    loadingInProgressEvaluators.push(evaluatorSettings);
         return bkEvaluatePluginManager.getEvaluatorFactory(evaluatorSettings.plugin)
             .then(function(factory) {
-              return factory.create(evaluatorSettings);
+              if(factory !== undefined && factory.create !== undefined)
+                return factory.create(evaluatorSettings);
+              else
+                return undefined;
+            }, function(err) {
+              return undefined;
             })
             .then(function(evaluator) {
+              if(evaluator === undefined)
+                return undefined;
               if (_.isEmpty(evaluatorSettings.name)) {
                 if (!evaluators[evaluator.pluginName]) {
                   evaluatorSettings.name = evaluator.pluginName;
@@ -71,6 +80,42 @@
       },
       getEvaluator: function(evaluatorId) {
         return evaluators[evaluatorId];
+      },
+      getVisualParams: function(name) {
+        if (evaluators[name] === undefined)
+          return bkEvaluatePluginManager.getVisualParams(name);
+        var v = { };
+        var e = evaluators[name];
+        var f = bkEvaluatePluginManager.getVisualParams(name);
+        if(e.bgColor !== undefined)
+          v.bgColor = e.bgColor;
+        else if (f !== undefined && f.bgColor !== undefined)
+          v.bgColor = f.bgColor;
+        else
+          v.bgColor = "";
+      
+        if(e.fgColor !== undefined)
+          v.fgColor = e.fgColor;
+        else if (f !== undefined && f.fgColor !== undefined)
+          v.fgColor = f.fgColor;
+        else
+          v.fgColor = "";
+      
+        if(e.borderColor !== undefined)
+          v.borderColor = e.borderColor;
+        else if (f !== undefined && f.borderColor !== undefined)
+          v.borderColor = f.borderColor;
+        else
+          v.borderColor = "";
+
+        if(e.shortName !== undefined)
+          v.shortName = e.shortName;
+        else if (f !== undefined && f.shortName !== undefined)
+          v.shortName = f.shortName;
+        else
+          v.shortName = "";
+
+        return v;
       },
       getAllEvaluators: function() {
         return evaluators;

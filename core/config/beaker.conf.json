@@ -3,14 +3,15 @@
   "allow-anonymous-usage-tracking": null,
   "init": [
     "./plugin/init/track.js",
-    "./plugin/init/addevalplugins.js"
+    "./plugin/init/addevalplugins.js",
+    "./plugin/init/addoutputdisplays.js"
   ],
   "control-panel-menu-plugins": [
+    "./plugin/menu/bunsen.js",
     "./plugin/menu/controlpanel.js",
     "./plugin/menu/controlpanel_addition.js",
-    "./plugin/menu/help.js",
     "./plugin/menu/file_ipython.js",
-    "./plugin/menu/bunsen.js"
+    "./plugin/menu/help.js"
   ],
   "notebook-app-menu-plugins":[
   ],

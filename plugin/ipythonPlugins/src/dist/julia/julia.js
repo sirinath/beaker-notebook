@@ -56,7 +56,7 @@ define(function(require, exports, module) {
       var base = _.string.startsWith(serviceBase, "/") ? serviceBase : "/" + serviceBase;
       bkHelper.httpGet("../beaker/rest/plugin-services/getIPythonPassword", {pluginId: PLUGIN_NAME})
         .success(function(result) {
-          bkHelper.httpPost(base + "/login?next=%2Fbeaker", {password: result})
+          bkHelper.httpPost(base + "/login?next=%2E", {password: result})
             .success(function(result) {
               if (ipyVersion1) {
                 self.kernel = new IPython.Kernel(base + "/kernels/");
@@ -307,6 +307,7 @@ define(function(require, exports, module) {
         shellReadyDeferred.resolve(JuliaShell);
       }).error(function() {
         console.log("failed to locate plugin service", PLUGIN_NAME, arguments);
+        shellReadyDeferred.reject("failed to locate plugin service");
       });
     };
     var onFail = function() {
@@ -350,7 +351,8 @@ define(function(require, exports, module) {
           return deferred.promise;
         }
       };
-    });
+    },
+    function(err) { return err; });
   };
 
   exports.name = PLUGIN_NAME;

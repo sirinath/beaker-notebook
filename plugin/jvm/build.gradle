@@ -19,17 +19,82 @@ repositories {
   mavenCentral()
 }
 
-dependencies {
-  compile group: 'org.eclipse.jetty', name: 'jetty-servlet', version: '8.1.13.v20130916'
-  runtime group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.6'
-  compile group: 'com.google.collections', name: 'google-collections', version: '1.0'
-  compile group: 'com.sun.jersey', name: 'jersey-servlet', version: '1.17.1'
-  compile group: 'com.sun.jersey', name: 'jersey-server', version: '1.17.1'
-  compile group: 'com.sun.jersey', name: 'jersey-core', version: '1.17.1'
-  compile group: 'org.apache.httpcomponents', name: 'fluent-hc', version: '4.3.1'
-  compile project(':shared')
+configurations {
+  provided
+  antlr
+  compile.extendsFrom provided
 }
 
+dependencies {
+  provided group: 'org.eclipse.jetty', name: 'jetty-servlet', version: '8.1.13.v20130916'
+  runtime group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.6'
+  provided group: 'com.google.collections', name: 'google-collections', version: '1.0'
+  provided group: 'com.sun.jersey', name: 'jersey-servlet', version: '1.17.1'
+  provided group: 'com.sun.jersey', name: 'jersey-server', version: '1.17.1'
+  provided group: 'com.sun.jersey', name: 'jersey-core', version: '1.17.1'
+  provided group: 'org.apache.httpcomponents', name: 'fluent-hc', version: '4.3.1'
+  compile group: 'org.xeustechnologies', name: 'jcl-core', version: '2.5'
+  compile group: 'org.antlr', name: 'antlr4-runtime', version: '4.3'
+  antlr group : 'org.antlr', name :'antlr4', version: '4.3'
+  provided project(':shared')
+}
+
+def findFilesOfType(dir,endsWith){
+    def collection = []
+    dir.eachFileRecurse(groovy.io.FileType.FILES) {
+        if(it.name.endsWith(endsWith)){
+            collection.add(it.absolutePath)
+        }
+    }
+    return collection
+}
+def getAntlrArgs(){
+    def listener = false
+    def visitor = false
+    def arg = []
+    if(project.hasProperty("listener")){
+        listener = project.listener
+    }
+    if(project.hasProperty("visitor")){
+        visitor = project.visitor
+    }
+    if(listener) {
+        arg.add("-listener")
+    }else {
+        arg.add("-no-listener")
+    }
+    if(visitor) {
+        arg.add("-visitor")
+    }else{
+        arg.add("-no-visitor")
+    }
+    def g4s = project.findFilesOfType(file('src'),".g4")
+    arg += g4s
+    println "Antlr args" + arg
+    return arg
+}
+task antlr4_java(type: JavaExec) {
+    main = "org.antlr.v4.Tool"
+    workingDir = "src/main/antlr4/"
+    args = ["Java.g4", "-o", "../java/com/twosigma/beaker/autocomplete/java","-listener", "-no-visitor", "-package", "com.twosigma.beaker.autocomplete.java", "-encoding", "UTF-8" ]
+    classpath =  configurations.antlr
+}
+task antlr4_groovy_lexer(type: JavaExec) {
+    main = "org.antlr.v4.Tool"
+    workingDir = "src/main/antlr4/"
+    args = ["GroovyLexer.g4", "-o", "../java/com/twosigma/beaker/autocomplete/groovy","-listener", "-no-visitor", "-package", "com.twosigma.beaker.autocomplete.groovy", "-encoding", "UTF-8" ]
+    classpath =  configurations.antlr
+}
+task antlr4_groovy_parser(type: JavaExec) {
+    main = "org.antlr.v4.Tool"
+    workingDir = "src/main/antlr4/"
+    args = ["GroovyParser.g4", "-o", "../java/com/twosigma/beaker/autocomplete/groovy","-listener", "-no-visitor", "-package", "com.twosigma.beaker.autocomplete.groovy", "-encoding", "UTF-8" ]
+    classpath =  configurations.antlr
+}
+
+compileJava.dependsOn antlr4_java
+compileJava.dependsOn antlr4_groovy_lexer
+compileJava.dependsOn antlr4_groovy_parser
 
 compileJava {
   options.compilerArgs << '-Xlint:deprecation'
@@ -38,4 +103,18 @@ compileJava {
 
 task installApp {
   // do nothing, this is a library
+}
+
+if (hasProperty('includeDepsInJar')) {
+  build.dependsOn jar
+  jar {
+    // need to remove META-INF/*.SF to use this.
+    from {
+       (configurations.compile - configurations.provided).collect { it.isDirectory() ? it : zipTree(it).matching{exclude{it.path.contains('META-INF')} } }
+    } {
+      exclude "META-INF/*.SF"
+      exclude "META-INF/*.DSA"
+      exclude "META-INF/*.RSA"
+    }
+  }
 }

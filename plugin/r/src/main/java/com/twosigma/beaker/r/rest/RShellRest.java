@@ -36,13 +36,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
-import javax.swing.ImageIcon;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.imageio.ImageIO;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.object.TableDisplay;
@@ -209,6 +207,7 @@ public class RShellRest {
   @Path("evaluate")
   public SimpleEvaluationObject evaluate(
       @FormParam("shellID") String shellID,
+      @FormParam("init") String initString,
       @FormParam("code") String code) 
     throws InterruptedException, REXPMismatchException, IOException
   {
@@ -216,6 +215,7 @@ public class RShellRest {
     obj.started();
     RServer server = getEvaluator(shellID);
     RConnection con = server.connection;
+    boolean init = initString != null && initString.equals("true");
 
     String file = windows() ? "rplot.svg" : makeTemp("rplot", ".svg");
     try {
@@ -227,16 +227,25 @@ public class RShellRest {
 
     try {
       // direct graphical output
-      con.eval("svg('" + file + "')");
-      String tryCode = "beaker_eval_=withVisible(try({" + code + "\n},silent=TRUE))";
+      String tryCode;
+      if (init) {
+        tryCode = code;
+      } else {
+        con.eval("do.call(svg,c(list('" + file + "'), beaker::saved_svg_options))");
+        tryCode = "beaker_eval_=withVisible(try({" + code + "\n},silent=TRUE))";
+      }
       REXP result = con.eval(tryCode);
+      if (init) {
+        obj.finished(result.asString());
+        return obj;
+      }
 
-      /*
-       if (null != result)
-         System.out.println("result class = " + result.getClass().getName());
-       else
-         System.out.println("result = null");
-      */
+      if (false) {
+        if (null != result)
+          System.out.println("result class = " + result.getClass().getName());
+        else
+          System.out.println("result = null");
+      }
 
       if (null == result) {
         obj.finished("");
@@ -267,7 +276,6 @@ public class RShellRest {
       obj.error("from dev.off(): " + e.getMessage());
     }
 
-    // addPngResults(file, obj);
     addSvgResults(file, obj);
 
     return obj;
@@ -362,20 +370,6 @@ public class RShellRest {
     return false;
   }
 
-  // should support multiple images? XXX
-  private static boolean addPngResults(String name, SimpleEvaluationObject obj) {
-    try {
-      File file = new File(name);
-      if (file.length() > 0) {
-        obj.finished(new ImageIcon(ImageIO.read(file)));
-        return true;
-      }
-    } catch (IOException e) {
-      System.out.println("IO error on " + name + " " + e);
-    }
-    return false;
-  }
-
   private static boolean isError(REXP result, SimpleEvaluationObject obj) {
     try {
       REXP value = result.asList().at(0);
@@ -389,6 +383,7 @@ public class RShellRest {
         return true;
       }
     } catch (REXPMismatchException e) {
+    } catch (NullPointerException e) {
     }
     return false;
   }
@@ -401,6 +396,7 @@ public class RShellRest {
         return true;
       }
     } catch (REXPMismatchException e) {
+    } catch (NullPointerException e) {
     }
     return false;
   }
@@ -440,6 +436,8 @@ public class RShellRest {
         values.add(row);
       }
       table = new TableDisplay(values, Arrays.asList(names), classes);
+    } catch (NullPointerException e) {
+      return false;
     } catch (REXPMismatchException e) {
       return false;
     }

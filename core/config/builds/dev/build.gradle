@@ -46,6 +46,18 @@ run {
   if ( project.hasProperty("appArgs") ) {
     args Eval.me(appArgs)
   }
+  return name
+}
+
+def gitGetHash() {
+  def name = "git log --pretty=format:%h -n 1".execute().text.trim()
+  return name
+}
+
+task writeVersion << {
+  new File(coreDir, 'config/version').write(gitDescribe());
+  new File(coreDir, 'config/hash').write(gitGetHash());
+  new File(coreDir, 'config/build_time').write(new Date().format("yyyy-MM-dd HH:mm z"));
 }
 
 clean.dependsOn(":core:clean")
@@ -55,7 +67,8 @@ build.dependsOn(":core:installApp")
 build.dependsOn(installPlugins)
 run.dependsOn(build)
 check.dependsOn(":core:build")
-check.dependsOn(installPlugins)
 check.dependsOn(":core:installApp")
+check.dependsOn(writeVersion)
+check.dependsOn(installPlugins)
 check.dependsOn(":test:check")
 
