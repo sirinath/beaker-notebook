@@ -114,7 +114,7 @@ gulp.task("buildSingleOutDispJs", function() {
 });
 
 gulp.task("compileBeakerScss", function() {
-  return gulp.src(Path.join(rootPath, "src/**.scss"))
+  return gulp.src(Path.join(rootPath, "**.scss"))
   .pipe(sass().on('error', handleError))
   .pipe(importCss())
   .pipe(stripCssComments())
