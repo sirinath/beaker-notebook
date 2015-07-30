@@ -85,7 +85,7 @@ define(function(require, exports, module) {
                   {notebook : {name : "fakename" + shellID,
                                path : "/some/path" + shellID}} :
                 {kernel: {id: shellID,
-                          name: "ruby 0.3"},
+                          name: "ruby"},
                  notebook: {path: "/fake/path" + shellID}
                 };
                 var fakeNotebook = {
