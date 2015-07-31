@@ -235,7 +235,7 @@ public class RServerEvaluator {
   protected boolean addSvgResults(String name, SimpleEvaluationObject obj) {
     File file = new File(name);
     if (file.length() > 0) {
-      if (file.length() < 100*1024) {
+      if (file.length() < 1000*1024) {
         // return small SVG as SVG
         try (FileInputStream fis = new FileInputStream(file)) {
           byte[] data = new byte[(int) file.length()];
@@ -547,8 +547,7 @@ public class RServerEvaluator {
               j.outputObject.error("from dev.off(): " + e.getMessage());
           }
 
-          if (!isfinished)
-            isfinished = addSvgResults(file, j.outputObject);
+          isfinished = addSvgResults(file, j.outputObject);
           if (!isfinished)
             j.outputObject.finished("", resultjson);
 
