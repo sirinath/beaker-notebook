@@ -66,8 +66,8 @@
           this.removeStringArrays(ret);
           return ret;
       },
-      httpGet: function(url, data) {
-        return $http({method: "GET", url: url, params: data});
+      httpGet: function(url, data, headers) {
+        return $http({method: "GET", url: url, params: data, headers: headers});
       },
       httpGetJson: function(url, data) {
         return $http({
@@ -104,13 +104,13 @@
           headers: {'Content-Type': 'application/json'}
         });
       },
-      httpPutJson: function(url, data) {
+      httpPutJson: function(url, data, headers) {
         return $http({
           method: "PUT",
           url: url,
           data: data,
           withCredentials: true,
-          headers: {'Content-Type': 'application/json'}
+          headers: _.extend({'Content-Type': 'application/json'}, headers)
         });
       },
       newDeferred: function() {
