@@ -259,7 +259,7 @@
       loadAjax: function(ajaxLocator) {
         console.log('loadAjax')
         var deferred = angularUtils.newDeferred();
-        angularUtils.httpGet(parseAjaxLocator(ajaxLocator).source, {"Authorization": "Token " + $localStorage.token})
+        angularUtils.httpGet(parseAjaxLocator(ajaxLocator).source, null, {"Authorization": "Token " + $localStorage.token})
             .success(function(content) {
               if (!_.isString(content)) {
                 // angular $http auto-detects JSON response and deserialize it using a JSON parser
