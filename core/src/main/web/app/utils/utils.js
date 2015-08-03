@@ -36,15 +36,15 @@
     function endsWith(str, suffix) {
       return str.indexOf(suffix, str.length - suffix.length) !== -1;
     }
-    
+
     var serverRoot = endsWith(document.baseURI, 'beaker/') ? document.baseURI.substring(0,document.baseURI.length-7): document.baseURI;
-    
+
     function serverUrl(path) {
       return serverRoot + path;
     }
 
     var fileRoot = document.baseURI;
-    
+
     function fileUrl(path) {
       return fileRoot + path;
     }
@@ -171,7 +171,7 @@
         return angularUtils.timeout(func,ms);
       },
       cancelTimeout: function(promise) {
-        return angularUtils.cancelTimeout(promise);  
+        return angularUtils.cancelTimeout(promise);
       },
       setServerRoot: function(url) {
         serverRoot = url;
